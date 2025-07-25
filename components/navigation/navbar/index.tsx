@@ -13,16 +13,13 @@ const Navbar = ({ admin = false }: { admin?: boolean }) => {
         "border-secondary-500 fixed z-50 flex w-full justify-between gap-5 border-b p-6 max-sm:p-3"
       )}
     >
-      <Link
-        href={admin ? ROUTES.DASHBOARD : ROUTES.HOME}
-        className="flex items-center"
-      >
-        <p className="text-secondary-500 text-3xl font-bold">
+      <Link href={admin ? ROUTES.DASHBOARD : ROUTES.HOME}>
+        <p className="text-secondary-500 text-3xl font-bold max-sm:text-2xl">
           Auto<span className="text-secondary-100">Park</span>
         </p>
       </Link>
 
-      <div className="flex justify-between gap-2">
+      <div className="flex items-center justify-between gap-2">
         <Image
           src="./icons/notice.svg"
           alt="Notification"

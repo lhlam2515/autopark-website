@@ -1,4 +1,5 @@
 import InfoCard from "@/components/cards/InfoCard";
+import ToolBar from "@/components/ToolBar";
 import { infoCards } from "@/constants/cards";
 
 export default function Home() {
@@ -28,11 +29,10 @@ export default function Home() {
         ))}
       </div>
 
-      <div className="flex w-full flex-col items-center gap-3 px-3 py-2">
-        <p className="text-secondary-100 text-lg font-normal">
-          Explore the features and functionalities of AutoPark!
-        </p>
-      </div>
+      <ToolBar
+        buttonLabel="Enter your slot ID"
+        buttonStyle="bg-primary-500 text-primary-100"
+      />
     </div>
   );
 }
