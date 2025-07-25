@@ -1,8 +1,10 @@
 import InfoCard from "@/components/cards/InfoCard";
 import ToolBar from "@/components/ToolBar";
 import { infoCards } from "@/constants/cards";
+import dbConnect from "@/lib/mongoose";
 
-export default function Home() {
+export default async function Home() {
+  await dbConnect();
   return (
     <div className="flex h-full w-full flex-col items-center gap-4">
       <section className="mt-2.5 flex w-full flex-col items-start justify-center px-2">
