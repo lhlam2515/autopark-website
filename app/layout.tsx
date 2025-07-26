@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { SessionProvider } from "next-auth/react";
 import "./globals.css";
+import { auth } from "@/auth";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -12,14 +15,19 @@ export const metadata: Metadata = {
   description: "A parking management system built with Next.js and React.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+const RootLayout = async ({ children }: { children: React.ReactNode }) => {
+  const session = await auth();
+
   return (
-    <html lang="en">
-      <body className={`${inter.className} antialiased`}>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <SessionProvider session={session}>
+        <body className={`${inter.className} antialiased`}>
+          {children}
+          <Toaster richColors />
+        </body>
+      </SessionProvider>
     </html>
   );
-}
+};
+
+export default RootLayout;
