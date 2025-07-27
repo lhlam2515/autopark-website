@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 
 import { cn } from "@/lib/utils";
+import MobileNav from "./MobileNav";
 
 const Navbar = ({ admin = false }: { admin?: boolean }) => {
   return (
@@ -27,6 +28,7 @@ const Navbar = ({ admin = false }: { admin?: boolean }) => {
           height={24}
         />
         <Image src="./icons/avatar.svg" alt="Profile" width={24} height={24} />
+        <MobileNav admin />
       </div>
     </nav>
   );

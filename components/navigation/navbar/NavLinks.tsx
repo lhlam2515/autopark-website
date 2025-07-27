@@ -5,11 +5,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
-import { sidebarLinks } from "@/constants/admin";
+import { SheetClose } from "@/components/ui/sheet";
+import { sidebarLinks as adminLinks } from "@/constants/admin";
+import { sidebarLinks as userLinks } from "@/constants/user";
 import { cn } from "@/lib/utils";
 
-const NavLinks = () => {
+const NavLinks = ({ isMobileNav = false }: { isMobileNav?: boolean }) => {
   const pathname = usePathname();
+  const admin = false; // Replace with actual logic to determine if the user is an admin
+  const sidebarLinks = admin ? adminLinks : userLinks;
 
   return (
     <>
@@ -30,8 +34,8 @@ const NavLinks = () => {
             <Image
               src={item.imgURL}
               alt={item.label}
-              width={20}
-              height={20}
+              width={24}
+              height={24}
               className="object-cover"
             />
             <p
@@ -45,7 +49,11 @@ const NavLinks = () => {
           </Link>
         );
 
-        return (
+        return isMobileNav ? (
+          <SheetClose asChild key={item.route}>
+            {LinkComponent}
+          </SheetClose>
+        ) : (
           <React.Fragment key={item.route}>{LinkComponent}</React.Fragment>
         );
       })}
