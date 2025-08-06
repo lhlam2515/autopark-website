@@ -10,8 +10,8 @@ export interface ISession {
   paymentStatus?: "unpaid" | "paid";
 }
 
-export interface ISessionDocument extends ISession, Document {}
-const SessionSchema = new Schema<ISessionDocument>(
+export interface ISessionDoc extends ISession, Document {}
+const SessionSchema = new Schema<ISession>(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     slotId: { type: Schema.Types.ObjectId, ref: "Slot", required: true },
@@ -28,7 +28,6 @@ const SessionSchema = new Schema<ISessionDocument>(
   { timestamps: true }
 );
 
-const Session =
-  models?.Session || model<ISessionDocument>("Session", SessionSchema);
+const Session = models?.Session || model<ISession>("Session", SessionSchema);
 
 export default Session;

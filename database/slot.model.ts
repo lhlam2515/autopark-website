@@ -6,8 +6,8 @@ export interface ISlot {
   deviceId: string;
 }
 
-export interface ISlotDocument extends ISlot, Document {}
-const SlotSchema = new Schema<ISlotDocument>(
+export interface ISlotDoc extends ISlot, Document {}
+const SlotSchema = new Schema<ISlot>(
   {
     slotId: { type: String, required: true, unique: true },
     location: { type: String, required: true },
@@ -16,6 +16,6 @@ const SlotSchema = new Schema<ISlotDocument>(
   { timestamps: true }
 );
 
-const Slot = models?.Slot || model<ISlotDocument>("Slot", SlotSchema);
+const Slot = models?.Slot || model<ISlot>("Slot", SlotSchema);
 
 export default Slot;
