@@ -47,3 +47,13 @@ export const SignUpSchema = z.object({
       message: "Password must contain at least one special character.",
     }),
 });
+
+export const UserSchema = z.object({
+  name: z.string().min(1, { message: "Name is required." }),
+  username: z
+    .string()
+    .min(8, { message: "Username must be at least 8 character long" }),
+  email: z.string().email({ message: "Please provide a valid email address." }),
+  image: z.string().url({ message: "Image must be a valid URL." }).optional(),
+  phone: z.string().optional(),
+});

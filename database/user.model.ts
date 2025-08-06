@@ -16,7 +16,7 @@ const UserSchema = new Schema<IUser>(
     email: { type: String, required: true, unique: true },
     image: { type: String, default: null },
     phone: { type: String, default: null },
-  },  
+  },
   { timestamps: true }
 );
 
