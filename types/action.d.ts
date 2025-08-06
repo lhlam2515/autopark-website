@@ -8,3 +8,10 @@ interface SignInWithOAuthParams {
     image?: string;
   };
 }
+
+interface AuthCredentials {
+  email: string;
+  password: string;
+  username: string;
+  name: string;
+}
