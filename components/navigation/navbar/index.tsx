@@ -5,8 +5,12 @@ import React from "react";
 
 import { cn } from "@/lib/utils";
 import MobileNav from "./MobileNav";
+import { auth } from "@/auth";
+import UserAvatar from "@/components/UserAvatar";
 
-const Navbar = ({ admin = false }: { admin?: boolean }) => {
+const Navbar = async ({ admin = false }: { admin?: boolean }) => {
+  const session = await auth();
+
   return (
     <nav
       className={cn(
@@ -27,8 +31,14 @@ const Navbar = ({ admin = false }: { admin?: boolean }) => {
           width={24}
           height={24}
         />
-        <Image src="./icons/avatar.svg" alt="Profile" width={24} height={24} />
-        <MobileNav admin />
+        {session?.user?.id && (
+          <UserAvatar
+            id={session.user.id}
+            name={session.user.name!}
+            imageUrl={session.user?.image}
+          />
+        )}
+        <MobileNav />
       </div>
     </nav>
   );

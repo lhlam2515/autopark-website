@@ -5,6 +5,7 @@ const ROUTES = {
   DASHBOARD: "/dashboard",
   USERS: "/users",
   STATIONS: "/stations",
+  PROFILE: (id: string) => `/profile/${id}`,
 };
 
 export default ROUTES;

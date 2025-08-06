@@ -10,7 +10,13 @@ import { sidebarLinks as adminLinks } from "@/constants/admin";
 import { sidebarLinks as userLinks } from "@/constants/user";
 import { cn } from "@/lib/utils";
 
-const NavLinks = ({ isMobileNav = false }: { isMobileNav?: boolean }) => {
+const NavLinks = ({
+  isMobileNav = false,
+  userId,
+}: {
+  isMobileNav?: boolean;
+  userId?: string;
+}) => {
   const pathname = usePathname();
   const admin = false; // Replace with actual logic to determine if the user is an admin
   const sidebarLinks = admin ? adminLinks : userLinks;
@@ -21,6 +27,11 @@ const NavLinks = ({ isMobileNav = false }: { isMobileNav?: boolean }) => {
         const isActive =
           (pathname.includes(item.route) && item.route.length > 1) ||
           pathname === item.route;
+
+        if (item.route === "/profile") {
+          if (userId) item.route = `/profile/${userId}`;
+          else return null; // Skip rendering if userId is not provided
+        }
 
         const LinkComponent = (
           <Link
