@@ -28,9 +28,12 @@ export default async function Home() {
             title={card.title}
             subtitle={card.subtitle}
             imgUrl={card.imgUrl}
-            content={card.content}
             button={card?.button}
-          />
+          >
+            <p className="text-secondary-100 text-base font-normal">
+              {card.content}
+            </p>
+          </InfoCard>
         ))}
       </div>
 
