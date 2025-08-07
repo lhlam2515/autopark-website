@@ -19,7 +19,7 @@ const ToolBar = ({ buttonLabel, buttonStyle }: Props) => {
         {buttonLabel}
       </Button>
       <Link href="/history">
-        <Image src="./icons/history.svg" alt="History" width={24} height={24} />
+        <Image src="/icons/history.svg" alt="History" width={24} height={24} />
         <span className="sr-only">History</span>
       </Link>
     </div>

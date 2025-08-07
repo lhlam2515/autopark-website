@@ -26,7 +26,7 @@ const Navbar = async ({ admin = false }: { admin?: boolean }) => {
 
       <div className="flex items-center justify-between gap-2">
         <Image
-          src="./icons/notice.svg"
+          src="/icons/notice.svg"
           alt="Notification"
           width={24}
           height={24}

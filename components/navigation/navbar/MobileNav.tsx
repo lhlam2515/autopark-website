@@ -25,7 +25,7 @@ const MobileNav = async ({ tool = false }: { tool?: boolean }) => {
     <Sheet>
       <SheetTrigger asChild>
         <Image
-          src="./icons/menu.svg"
+          src="/icons/menu.svg"
           width={24}
           height={24}
           alt="Menu"
