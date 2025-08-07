@@ -3,12 +3,12 @@
 import { User } from "@/database";
 import action from "../handlers/action";
 import handleError from "../handlers/error";
-import { GetUserSchema } from "../validations";
-import { IUser } from "@/database/user.model";
+import { GetUserSchema, UpdateUserSchema } from "../validations";
+import { IUser, IUserDoc } from "@/database/user.model";
 
 export async function getUser(
   params: GetUserParams
-): Promise<ActionResponse<{ user: IUser }>> {
+): Promise<ActionResponse<{ user: IUserDoc }>> {
   const validationResult = await action({
     params,
     schema: GetUserSchema,
@@ -29,6 +29,41 @@ export async function getUser(
       success: true,
       data: {
         user: JSON.parse(JSON.stringify(user)),
+      },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+
+export async function updateUser(
+  params: UpdateUserParams
+): Promise<ActionResponse<{ user: IUserDoc }>> {
+  const validationResult = await action({
+    params,
+    schema: UpdateUserSchema,
+    authorize: true,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { user } = validationResult.session!;
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      user?.id,
+      {
+        ...validationResult.params,
+      },
+      { new: true }
+    );
+
+    return {
+      success: true,
+      data: {
+        user: JSON.parse(JSON.stringify(updatedUser)),
       },
     };
   } catch (error) {

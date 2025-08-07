@@ -75,7 +75,9 @@ const UserProfile = async ({ params }: RouteParams) => {
           <div className="flex w-full flex-col gap-2.5 px-4">
             <Entry label="Card number" imgUrl="/icons/card.svg">
               <p className="text-secondary-100 text-base font-normal">
-                {user?.cardNumber || "Not provided"}
+                {user?.cardNumber
+                  ? user.cardNumber.slice(7).replace(/\d(?=\d{4})/g, "*")
+                  : "Not provided"}
               </p>
             </Entry>
             <Entry label="Expiry" imgUrl="/icons/clock.svg">

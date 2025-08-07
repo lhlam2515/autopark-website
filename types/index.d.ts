@@ -18,6 +18,3 @@ interface RouteParams {
   params: Promise<Recode<string, string>>;
   searchParams: Promise<Recode<string, string>>;
 }
-interface GetUserParams {
-  userId: string;
-}

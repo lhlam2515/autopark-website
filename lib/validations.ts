@@ -102,6 +102,51 @@ export const SigninWithOAuthSchema = z.object({
   }),
 });
 
+export const ProfileSchema = z.object({
+  name: z.string().min(1, { message: "Name is required." }),
+  username: z
+    .string()
+    .min(3, { message: "Username must be at least 3 characters long." })
+    .max(30, { message: "Username cannot exceed 30 characters." })
+    .regex(/^[a-zA-Z0-9_]+$/, {
+      message: "Username can only contain letters, numbers, and underscores.",
+    }),
+  phone: z
+    .string()
+    .regex(/^\d{10}$/, { message: "Phone number must be 10 digits long." })
+    .optional(),
+  cardNumber: z
+    .string()
+    .regex(/^\d{16}$/, { message: "Card number must be 16 digits long." })
+    .optional(),
+  cardExpiry: z
+    .string()
+    .regex(/^(0[1-9]|1[0-2])\/\d{2}$/, {
+      message: "Card expiry must be in MM/YY format.",
+    })
+    .optional(),
+});
+
 export const GetUserSchema = z.object({
   userId: z.string().min(1, { message: "User ID is required." }),
+});
+
+export const UpdateUserSchema = z.object({
+  name: z.string().min(1, { message: "Name is required." }).optional(),
+  username: z
+    .string()
+    .min(3, { message: "Username must be at least 3 characters long." })
+    .optional(),
+  phone: z
+    .string()
+    .min(10, { message: "Phone number must be at least 10 digits long." })
+    .optional(),
+  cardNumber: z
+    .string()
+    .min(16, { message: "Card number must be at least 16 digits long." })
+    .optional(),
+  cardExpiry: z
+    .string()
+    .min(5, { message: "Card expiry must be at least 5 characters long." })
+    .optional(),
 });

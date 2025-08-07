@@ -15,3 +15,15 @@ interface AuthCredentials {
   username: string;
   name: string;
 }
+
+interface GetUserParams {
+  userId: string;
+}
+
+interface UpdateUserParams {
+  name?: string;
+  username?: string;
+  phone?: string;
+  cardNumber?: string;
+  cardExpiry?: string;
+}
