@@ -9,7 +9,15 @@ type ActionResponse<T = null> = {
 };
 
 type SuccessResponse<T = null> = ActionResponse<T> & { success: true };
-type ErrorResponse = ActionResponse & { success: false };
+type ErrorResponse = ActionResponse<T> & { success: false };
 
 type APIErrorResponse = NextResponse<ErrorResponse>;
 type APIResponse<T = null> = NextResponse<SuccessResponse<T> | ErrorResponse>;
+
+interface RouteParams {
+  params: Promise<Recode<string, string>>;
+  searchParams: Promise<Recode<string, string>>;
+}
+interface GetUserParams {
+  userId: string;
+}

@@ -101,3 +101,7 @@ export const SigninWithOAuthSchema = z.object({
     image: z.string().url({ message: "Invalid image URL." }).optional(),
   }),
 });
+
+export const GetUserSchema = z.object({
+  userId: z.string().min(1, { message: "User ID is required." }),
+});

@@ -7,8 +7,38 @@ import Entry from "@/components/Entry";
 import ToolBar from "@/components/ToolBar";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
+import { notFound } from "next/navigation";
+import { auth } from "@/auth";
+import { getUser } from "@/lib/actions/user.action";
 
-const UserProfile = () => {
+const UserProfile = async ({ params }: RouteParams) => {
+  const { id } = await params;
+  if (!id) notFound();
+
+  const loggedInUser = await auth();
+  if (!loggedInUser || loggedInUser?.user?.id !== id) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <p className="text-secondary-500 text-center text-2xl font-bold">
+          You are not authorized to view this profile.
+        </p>
+      </div>
+    );
+  }
+
+  const { success, data, error } = await getUser({ userId: id });
+  if (!success) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <p className="text-secondary-500 text-center text-2xl font-bold">
+          {error?.message}
+        </p>
+      </div>
+    );
+  }
+
+  const { user } = data!;
+
   return (
     <div className="flex h-full w-full flex-col items-center gap-4">
       <section className="mt-2.5 flex w-full flex-col items-start justify-center px-2">
@@ -26,17 +56,17 @@ const UserProfile = () => {
           <div className="flex w-full flex-col gap-2.5 px-4">
             <Entry label="Full name" imgUrl="/icons/person.svg">
               <p className="text-secondary-100 text-base font-normal">
-                Nguyen Van A
+                {user.name}
               </p>
             </Entry>
             <Entry label="Email" imgUrl="/icons/email.svg">
               <p className="text-secondary-100 text-base font-normal">
-                user@example.com
+                {user.email}
               </p>
             </Entry>
             <Entry label="Phone" imgUrl="/icons/phone.svg">
               <p className="text-secondary-100 text-base font-normal">
-                0987654321
+                {user.phone || "Not provided"}
               </p>
             </Entry>
           </div>
@@ -45,11 +75,13 @@ const UserProfile = () => {
           <div className="flex w-full flex-col gap-2.5 px-4">
             <Entry label="Card number" imgUrl="/icons/card.svg">
               <p className="text-secondary-100 text-base font-normal">
-                Visa ••••1234
+                {user?.cardNumber || "Not provided"}
               </p>
             </Entry>
             <Entry label="Expiry" imgUrl="/icons/clock.svg">
-              <p className="text-secondary-100 text-base font-normal">09/28</p>
+              <p className="text-secondary-100 text-base font-normal">
+                {user?.cardExpiry || "Not provided"}
+              </p>
             </Entry>
           </div>
         </InfoCard>

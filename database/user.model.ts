@@ -6,6 +6,8 @@ export interface IUser {
   email: string;
   image?: string;
   phone?: string;
+  cardNumber?: string;
+  cardExpiry?: string;
 }
 
 export interface IUserDoc extends IUser, Document {}
@@ -16,6 +18,8 @@ const UserSchema = new Schema<IUser>(
     email: { type: String, required: true, unique: true },
     image: { type: String, default: null },
     phone: { type: String, default: null },
+    cardNumber: { type: String, default: null },
+    cardExpiry: { type: String, default: null },
   },
   { timestamps: true }
 );
