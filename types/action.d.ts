@@ -27,3 +27,11 @@ interface UpdateUserParams {
   cardNumber?: string;
   cardExpiry?: string;
 }
+
+interface SendWelcomeEmailParams {
+  userId: string;
+}
+
+interface SendNotificationEmailParams {
+  userId: string;
+}

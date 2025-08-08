@@ -150,3 +150,11 @@ export const UpdateUserSchema = z.object({
     .min(5, { message: "Card expiry must be at least 5 characters long." })
     .optional(),
 });
+
+export const SendWelcomeEmailParams = z.object({
+  userId: z.string().min(1, { message: "User ID is required." }),
+});
+
+export const SendNotificationEmailSchema = z.object({
+  userId: z.string().min(1, { message: "User ID is required." }),
+});
