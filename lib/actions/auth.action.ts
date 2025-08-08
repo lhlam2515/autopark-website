@@ -9,6 +9,7 @@ import action from "../handlers/action";
 import handleError from "../handlers/error";
 import { SignInSchema, SignUpSchema } from "../validations";
 import { NotFoundError } from "../http-errors";
+import { sendWelcomeEmail } from "./email.action";
 
 export async function signUpWithCredentials(
   params: AuthCredentials
@@ -53,6 +54,8 @@ export async function signUpWithCredentials(
     await session.commitTransaction();
 
     await signIn("credentials", { email, password, redirect: false });
+
+    await sendWelcomeEmail({ userId: newUser.id });
 
     return { success: true };
   } catch (error) {

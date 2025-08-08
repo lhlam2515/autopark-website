@@ -7,6 +7,7 @@ import handlerError from "@/lib/handlers/error";
 import { ValidationError } from "@/lib/http-errors";
 import dbConnect from "@/lib/mongoose";
 import { SigninWithOAuthSchema } from "@/lib/validations";
+import { sendWelcomeEmail } from "@/lib/actions/email.action";
 
 export async function POST(request: Request) {
   const { provider, providerAccountId, user } = await request.json();
@@ -15,6 +16,8 @@ export async function POST(request: Request) {
 
   const session = await mongoose.startSession();
   session.startTransaction();
+
+  let firstTime = false; // Track if this is the user's first login
 
   try {
     const validatedData = SigninWithOAuthSchema.safeParse({
@@ -41,6 +44,7 @@ export async function POST(request: Request) {
         [{ name, username: slugifiedUsername, email, image }],
         { session }
       );
+      firstTime = true;
     } else {
       const updatedData: { name?: string; image?: string } = {};
 
@@ -77,6 +81,10 @@ export async function POST(request: Request) {
     }
 
     await session.commitTransaction();
+
+    if (firstTime) {
+      await sendWelcomeEmail({ userId: existingUser.id });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
