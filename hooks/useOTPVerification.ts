@@ -55,7 +55,7 @@ export function useOTPVerification({ onCleanup }: { onCleanup: () => void }) {
             await remove(child(slotRef, "OTP"));
 
             // Create parking session
-            await createSession({ slotId: data.slot.id });
+            await createSession({ slotId: data.slot._id as string });
 
             toast.success("OTP verified successfully!");
             router.push(ROUTES.PARKING_SESSION);
