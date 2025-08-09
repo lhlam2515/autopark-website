@@ -115,10 +115,11 @@ const UserProfile = async ({ params }: RouteParams) => {
         </InfoCard>
       </div>
 
-      <ToolBar
-        buttonLabel="Home"
-        buttonStyle="bg-primary-500 text-primary-100"
-      />
+      <ToolBar>
+        <Button asChild className="bg-primary-500 text-primary-100 grow p-2">
+          <Link href={ROUTES.HOME}>Home</Link>
+        </Button>
+      </ToolBar>
     </div>
   );
 };
