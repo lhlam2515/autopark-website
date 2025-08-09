@@ -15,7 +15,7 @@ const SessionSchema = new Schema<ISession>(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     slotId: { type: Schema.Types.ObjectId, ref: "Slot", required: true },
-    checkInTime: { type: Date, default: Date.now, required: true },
+    checkInTime: { type: Date, required: true },
     checkOutTime: { type: Date },
     isActive: { type: Boolean, default: true },
     locked: { type: Boolean, default: false },
