@@ -7,6 +7,7 @@ const ROUTES = {
   STATIONS: "/stations",
   PROFILE: (id: string) => `/profile/${id}`,
   EDIT_PROFILE: "/profile/edit",
+  PARKING_SESSION: "/parking",
 };
 
 export default ROUTES;
