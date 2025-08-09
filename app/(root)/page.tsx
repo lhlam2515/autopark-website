@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import InfoCard from "@/components/cards/InfoCard";
+import SlotForm from "@/components/forms/SlotForm";
 import ToolBar from "@/components/ToolBar";
-import { Button } from "@/components/ui/button";
 import { infoCards } from "@/constants/cards";
 
 export default async function Home() {
@@ -38,14 +38,8 @@ export default async function Home() {
         ))}
       </div>
 
-      {/* <ToolBar
-        buttonLabel="Enter your slot ID"
-        buttonStyle="bg-primary-500 text-primary-100"
-      /> */}
       <ToolBar>
-        <Button className="bg-primary-500 text-primary-100 grow p-2">
-          Enter your slot ID
-        </Button>
+        <SlotForm />
       </ToolBar>
     </div>
   );
