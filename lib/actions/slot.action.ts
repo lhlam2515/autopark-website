@@ -1,0 +1,103 @@
+"use server";
+
+import mongoose from "mongoose";
+import Slot, { ISlot, ISlotDoc } from "@/database/slot.model";
+import action from "../handlers/action";
+import handleError from "../handlers/error";
+import { CreateSlotSchema, GetSlotSchema } from "../validations";
+import { NotFoundError } from "../http-errors";
+
+export const createSlot = async (
+  params: CreateSlotParams
+): Promise<ActionResponse<{ slot: ISlot }>> => {
+  const validationResult = await action({
+    params,
+    schema: CreateSlotSchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { slotId, location, deviceId } = validationResult.params!;
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const [newSlot] = await Slot.create(
+      [
+        {
+          slotId,
+          location,
+          deviceId,
+        },
+      ],
+      { session }
+    );
+
+    await session.commitTransaction();
+
+    return {
+      success: true,
+      data: {
+        slot: JSON.parse(JSON.stringify(newSlot)),
+      },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+};
+
+export const getSlots = async (): Promise<
+  ActionResponse<{ slots: ISlot[] }>
+> => {
+  const validationResult = await action({ authorize: true });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  try {
+    const slots = await Slot.find();
+
+    return {
+      success: true,
+      data: {
+        slots: JSON.parse(JSON.stringify(slots)),
+      },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+};
+
+export const getSlot = async (
+  params: GetSlotParams
+): Promise<ActionResponse<{ slot: ISlotDoc }>> => {
+  const validationResult = await action({
+    params,
+    schema: GetSlotSchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { slotId } = validationResult.params!;
+
+  try {
+    const slot = await Slot.findOne({ slotId });
+
+    if (!slot) throw new NotFoundError("Slot");
+
+    return {
+      success: true,
+      data: {
+        slot: JSON.parse(JSON.stringify(slot)),
+      },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+};

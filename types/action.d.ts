@@ -35,3 +35,17 @@ interface SendWelcomeEmailParams {
 interface SendNotificationEmailParams {
   userId: string;
 }
+
+interface CreateSlotParams {
+  slotId: string;
+  location: string;
+  deviceId: string;
+}
+
+interface GetSlotParams {
+  slotId: string;
+}
+
+interface CreateSessionParams {
+  slotId: string;
+}
