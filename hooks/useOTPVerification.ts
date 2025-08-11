@@ -6,6 +6,7 @@ import {
   remove,
   DataSnapshot,
   child,
+  set,
 } from "firebase/database";
 import { database } from "@/lib/firebase";
 import { getSlot } from "@/lib/actions/slot.action";
@@ -55,7 +56,20 @@ export function useOTPVerification({ onCleanup }: { onCleanup: () => void }) {
             await remove(child(slotRef, "OTP"));
 
             // Create parking session
-            await createSession({ slotId: data.slot._id as string });
+            const result = await createSession({
+              slotId: data.slot._id as string,
+            });
+
+            if (result.error) {
+              toast.error(`Failed to create session: ${result.error.message}`);
+              return;
+            }
+
+            const { user } = result.data!;
+
+            // Set user name and availability
+            await set(child(slotRef, "name"), user);
+            await set(child(slotRef, "available"), false);
 
             toast.success("OTP verified successfully!");
             router.push(ROUTES.PARKING_SESSION);

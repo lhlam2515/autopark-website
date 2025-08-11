@@ -1,14 +1,14 @@
 "use server";
 
-import mongoose from "mongoose";
+import mongoose, { PipelineStage } from "mongoose";
 import Session, { ISessionDoc } from "@/database/session.model";
 import action from "../handlers/action";
 import handleError from "../handlers/error";
-import { CreateSessionSchema } from "../validations";
+import { CreateSessionSchema, GetCurrentSessionSchema } from "../validations";
 
 export async function createSession(
   params: CreateSessionParams
-): Promise<ActionResponse<{ parkingSession: ISessionDoc }>> {
+): Promise<ActionResponse<{ parkingSession: ISessionDoc; user: string }>> {
   const validationResult = await action({
     params,
     schema: CreateSessionSchema,
@@ -20,7 +20,7 @@ export async function createSession(
   }
 
   const { slotId } = validationResult.params!;
-  const userId = validationResult.session?.user?.id;
+  const { id: userId, name: userName } = validationResult.session?.user || {};
 
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -47,6 +47,69 @@ export async function createSession(
       success: true,
       data: {
         parkingSession: JSON.parse(JSON.stringify(newSession)),
+        user: userName!,
+      },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+
+export async function getCurrentSession(
+  params: GetCurrentSessionParams
+): Promise<ActionResponse<{ session: ParkingSession }>> {
+  const validationResult = await action({
+    params,
+    schema: GetCurrentSessionSchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { userId } = validationResult.params!;
+
+  try {
+    const pipeline: PipelineStage[] = [
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+          isActive: true,
+        },
+      },
+      {
+        $lookup: {
+          from: "slots",
+          localField: "slotId",
+          foreignField: "_id",
+          as: "slot",
+        },
+      },
+      { $unwind: "$slot" }, // flatten slot array
+      {
+        $project: {
+          slot: {
+            slotId: "$slot.slotId",
+            location: "$slot.location",
+            deviceId: "$slot.deviceId",
+          },
+          checkInTime: 1,
+          locked: 1,
+          paymentStatus: 1,
+        },
+      },
+    ];
+
+    const [detailedSession] = await Session.aggregate(pipeline);
+
+    if (!detailedSession) {
+      throw new Error("Parking session not found");
+    }
+
+    return {
+      success: true,
+      data: {
+        session: JSON.parse(JSON.stringify(detailedSession)),
       },
     };
   } catch (error) {

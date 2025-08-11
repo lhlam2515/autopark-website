@@ -172,3 +172,7 @@ export const GetSlotSchema = z.object({
 export const CreateSessionSchema = z.object({
   slotId: z.string().min(1, { message: "Slot ID is required." }),
 });
+
+export const GetCurrentSessionSchema = z.object({
+  userId: z.string().min(1, { message: "User ID is required." }),
+});

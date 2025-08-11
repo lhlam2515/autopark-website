@@ -18,3 +18,14 @@ interface RouteParams {
   params: Promise<Recode<string, string>>;
   searchParams: Promise<Recode<string, string>>;
 }
+
+interface ParkingSession {
+  slot: {
+    slotId: string;
+    location: string;
+    deviceId: string;
+  };
+  checkInTime: Date;
+  locked: boolean;
+  paymentStatus: "unpaid" | "paid";
+}

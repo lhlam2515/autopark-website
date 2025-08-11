@@ -49,3 +49,7 @@ interface GetSlotParams {
 interface CreateSessionParams {
   slotId: string;
 }
+
+interface GetCurrentSessionParams {
+  userId: string;
+}
