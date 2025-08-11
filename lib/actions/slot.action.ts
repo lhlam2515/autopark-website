@@ -74,7 +74,7 @@ export const getSlots = async (): Promise<
 
 export const getSlot = async (
   params: GetSlotParams
-): Promise<ActionResponse<{ slot: ISlotDoc }>> => {
+): Promise<ActionResponse<{ slot: ISlot }>> => {
   const validationResult = await action({
     params,
     schema: GetSlotSchema,
