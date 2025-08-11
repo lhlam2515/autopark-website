@@ -14,7 +14,7 @@ const Entry = ({ label, imgUrl, children }: Props) => {
         {imgUrl && <Image src={imgUrl} width={24} height={24} alt={label} />}
         <p className="text-secondary-500 text-base font-bold">{label}</p>
       </div>
-      <div className="flex w-full justify-end">{children}</div>
+      <div className="flex w-full grow-1 justify-end">{children}</div>
     </div>
   );
 };
