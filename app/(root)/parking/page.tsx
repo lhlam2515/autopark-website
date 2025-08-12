@@ -2,13 +2,19 @@ import React from "react";
 import ToolBar from "@/components/ToolBar";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
-import { getCurrentSession } from "@/lib/actions/session.action";
+import {
+  getCurrentSession,
+  lockParkingSession,
+} from "@/lib/actions/session.action";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import SlotCard from "@/components/cards/SlotCard";
 import ParkingCard from "@/components/cards/ParkingCard";
 import PaymentCard from "@/components/cards/PaymentCard";
 import WeatherCard from "@/components/cards/WeatherCard";
+import { cn } from "@/lib/utils";
+import { database } from "@/lib/firebase";
+import { child, ref, set } from "firebase/database";
 
 const ParkingSession = async () => {
   const session = await auth();
@@ -21,6 +27,27 @@ const ParkingSession = async () => {
   }
 
   const { slot, ...parkingSession } = data.session;
+
+  const handleLock = async () => {
+    "use server";
+
+    const { success } = await lockParkingSession({
+      userId: session?.user?.id as string,
+      slotId: slot.slotId,
+    });
+
+    if (success) {
+      const slotIndex = slot.slotId.split("-")[1];
+      const slotRef = ref(
+        database,
+        `/devices/${slot.deviceId}/slots/${slotIndex}`
+      );
+
+      await set(child(slotRef, "locked"), true);
+    }
+
+    redirect(ROUTES.PARKING_SESSION);
+  };
 
   return (
     <div className="flex h-full w-full flex-col items-center gap-4">
@@ -48,7 +75,24 @@ const ParkingSession = async () => {
         />
       </div>
       <ToolBar>
-        <Button className="text-primary-100 grow bg-green-500 p-2">Lock</Button>
+        {!parkingSession.locked ? (
+          <Button
+            className="text-primary-100 grow bg-green-500 p-2"
+            onClick={handleLock}
+          >
+            Lock
+          </Button>
+        ) : (
+          <Button
+            className={cn(
+              "text-primary-100 grow bg-red-500 p-2",
+              parkingSession.paymentStatus === "unpaid" &&
+                "cursor-not-allowed opacity-50"
+            )}
+          >
+            Unlock
+          </Button>
+        )}
       </ToolBar>
     </div>
   );

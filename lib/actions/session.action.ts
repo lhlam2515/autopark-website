@@ -4,7 +4,12 @@ import mongoose, { PipelineStage } from "mongoose";
 import Session, { ISessionDoc } from "@/database/session.model";
 import action from "../handlers/action";
 import handleError from "../handlers/error";
-import { CreateSessionSchema, GetCurrentSessionSchema } from "../validations";
+import {
+  CreateSessionSchema,
+  GetCurrentSessionSchema,
+  LockParkingSessionSchema,
+} from "../validations";
+import { Slot } from "@/database";
 
 export async function createSession(
   params: CreateSessionParams
@@ -111,6 +116,46 @@ export async function getCurrentSession(
       data: {
         session: JSON.parse(JSON.stringify(detailedSession)),
       },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+
+export async function lockParkingSession(
+  params: LockParkingSessionParams
+): Promise<ActionResponse<null>> {
+  const validationResult = await action({
+    params,
+    schema: LockParkingSessionSchema,
+    authorize: true,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { userId, slotId } = validationResult.params!;
+
+  try {
+    const slot = await Slot.findOne({ slotId });
+    if (!slot) {
+      throw new Error("Slot not found");
+    }
+
+    const session = await Session.findOneAndUpdate(
+      { userId, slotId: slot._id, isActive: true },
+      { locked: true },
+      { new: true }
+    );
+
+    if (!session) {
+      throw new Error("Parking session not found");
+    }
+
+    return {
+      success: true,
+      data: null,
     };
   } catch (error) {
     return handleError(error) as ErrorResponse;
