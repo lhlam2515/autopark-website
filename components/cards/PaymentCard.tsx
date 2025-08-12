@@ -9,6 +9,11 @@ import {
   formatCurrency,
 } from "@/lib/utils";
 import InfoCard from "./InfoCard";
+import { Button } from "../ui/button";
+import { processPayment } from "@/lib/actions/session.action";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import ROUTES from "@/constants/routes";
 
 interface Props {
   checkInTime: Date;
@@ -16,6 +21,7 @@ interface Props {
 }
 
 const PaymentCard = ({ checkInTime, paymentStatus }: Props) => {
+  const router = useRouter();
   const initialFee = calculateParkingFee(calculateElapsedTime(checkInTime));
   const [fee, setFee] = useState(initialFee);
 
@@ -26,6 +32,21 @@ const PaymentCard = ({ checkInTime, paymentStatus }: Props) => {
 
     return () => clearInterval(interval);
   }, [checkInTime]);
+
+  const handlePayment = async () => {
+    // Implement payment logic here
+    const { success, error } = await processPayment({ fee });
+
+    if (success) {
+      toast.success("Payment successful");
+      router.push(ROUTES.PARKING_SESSION);
+    } else {
+      toast.error("Payment failed", {
+        description: error?.message,
+        dismissible: true,
+      });
+    }
+  };
 
   return (
     <InfoCard title="Payment Status" imgUrl="/icons/payment.svg">
@@ -42,6 +63,14 @@ const PaymentCard = ({ checkInTime, paymentStatus }: Props) => {
             />
           )}
         </Entry>
+        {paymentStatus === "unpaid" && (
+          <Button
+            className="bg-primary-500 hover:bg-primary-400 text-primary-100 text-base font-semibold"
+            onClick={handlePayment}
+          >
+            Pay Now
+          </Button>
+        )}
       </div>
     </InfoCard>
   );

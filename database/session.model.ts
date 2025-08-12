@@ -8,6 +8,7 @@ export interface ISession {
   checkOutTime?: Date;
   locked?: boolean;
   paymentStatus?: "unpaid" | "paid";
+  fee?: number;
 }
 
 export interface ISessionDoc extends ISession, Document {}
@@ -24,6 +25,7 @@ const SessionSchema = new Schema<ISession>(
       enum: ["unpaid", "paid"],
       default: "unpaid",
     },
+    fee: { type: Number, min: 0 },
   },
   { timestamps: true }
 );

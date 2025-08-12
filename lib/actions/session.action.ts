@@ -139,7 +139,7 @@ export async function lockParkingSession(
     return handleError(validationResult) as ErrorResponse;
   }
 
-  const { userId, slotId } = validationResult.params!;
+  const { userId, slotId, lock } = validationResult.params!;
 
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -152,9 +152,53 @@ export async function lockParkingSession(
 
     const updatedSession = await Session.findOneAndUpdate(
       { userId, slotId: slot._id, isActive: true },
-      { locked: true },
+      { locked: lock, isActive: lock },
       { new: true }
     );
+
+    if (!updatedSession) {
+      throw new Error("Parking session not found");
+    }
+
+    await session.commitTransaction();
+
+    return {
+      success: true,
+      data: null,
+    };
+  } catch (error) {
+    await session.abortTransaction();
+    return handleError(error) as ErrorResponse;
+  } finally {
+    session.endSession();
+  }
+}
+
+export async function processPayment(
+  params: ProcessPaymentParams
+): Promise<ActionResponse<null>> {
+  const validationResult = await action({
+    params,
+    schema: ProcessPaymentSchema,
+    authorize: true,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { fee } = validationResult.params!;
+  const userId = validationResult.session?.user?.id;
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const updatedSession = await Session.findOneAndUpdate(
+      { userId, isActive: true },
+      { paymentStatus: "paid", fee, checkOutTime: new Date() },
+      { new: true }
+    ).session(session);
 
     if (!updatedSession) {
       throw new Error("Parking session not found");

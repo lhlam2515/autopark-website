@@ -180,4 +180,9 @@ export const GetCurrentSessionSchema = z.object({
 export const LockParkingSessionSchema = z.object({
   userId: z.string().min(1, { message: "User ID is required." }),
   slotId: z.string().min(1, { message: "Slot ID is required." }),
+  lock: z.boolean().optional().default(true),
+});
+
+export const ProcessPaymentSchema = z.object({
+  fee: z.number().min(0, { message: "Fee must be a positive number." }),
 });

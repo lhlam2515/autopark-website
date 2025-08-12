@@ -56,4 +56,9 @@ interface GetCurrentSessionParams {
 interface LockParkingSessionParams {
   userId: string;
   slotId: string;
+  lock?: boolean;
+}
+
+interface ProcessPaymentParams {
+  fee: number;
 }

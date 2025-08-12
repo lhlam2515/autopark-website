@@ -21,9 +21,10 @@ interface Props {
     location: string;
   };
   checkInTime: Date;
+  paid: boolean;
 }
 
-const ParkingCard = ({ slot, checkInTime }: Props) => {
+const ParkingCard = ({ slot, checkInTime, paid }: Props) => {
   const initialElapsed = calculateElapsedTime(checkInTime);
   const initialFee = calculateParkingFee(initialElapsed);
 
@@ -31,13 +32,15 @@ const ParkingCard = ({ slot, checkInTime }: Props) => {
   const [fee, setFee] = useState(initialFee);
 
   useEffect(() => {
+    if (paid) return; // Stop updating if paid
+
     const interval = setInterval(() => {
       setElapsed(calculateElapsedTime(checkInTime));
       setFee(calculateParkingFee(elapsed));
     }, 1000); // Update every second
 
     return () => clearInterval(interval);
-  }, [elapsed, checkInTime]);
+  }, [elapsed, checkInTime, paid]);
 
   const handlePingSlot = async () => {
     const slotIndex = slot.slotId.split("-")[1];

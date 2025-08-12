@@ -31,9 +31,11 @@ const ParkingSession = async () => {
   const handleLock = async () => {
     "use server";
 
+    const lock = parkingSession.paymentStatus === "unpaid";
     const { success } = await lockParkingSession({
       userId: session?.user?.id as string,
       slotId: slot.slotId,
+      lock,
     });
 
     if (success) {
@@ -43,7 +45,7 @@ const ParkingSession = async () => {
         `/devices/${slot.deviceId}/slots/${slotIndex}`
       );
 
-      await set(child(slotRef, "locked"), true);
+      await set(child(slotRef, "locked"), lock);
     }
 
     redirect(ROUTES.PARKING_SESSION);
@@ -68,7 +70,11 @@ const ParkingSession = async () => {
           locked={parkingSession.locked}
         />
         <WeatherCard deviceId={slot.deviceId} />
-        <ParkingCard slot={slot} checkInTime={parkingSession.checkInTime} />
+        <ParkingCard
+          slot={slot}
+          checkInTime={parkingSession.checkInTime}
+          paid={parkingSession.paymentStatus === "paid"}
+        />
         <PaymentCard
           checkInTime={parkingSession.checkInTime}
           paymentStatus={parkingSession.paymentStatus}
@@ -89,6 +95,9 @@ const ParkingSession = async () => {
               parkingSession.paymentStatus === "unpaid" &&
                 "cursor-not-allowed opacity-50"
             )}
+            onClick={
+              parkingSession.paymentStatus === "unpaid" ? undefined : handleLock
+            }
           >
             Unlock
           </Button>
