@@ -45,7 +45,10 @@ export const createSlot = async (
       },
     };
   } catch (error) {
+    await session.abortTransaction();
     return handleError(error) as ErrorResponse;
+  } finally {
+    session.endSession();
   }
 };
 

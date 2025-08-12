@@ -1,13 +1,14 @@
 "use server";
 
 import mongoose, { PipelineStage } from "mongoose";
-import Session, { ISessionDoc } from "@/database/session.model";
+import Session, { ISession, ISessionDoc } from "@/database/session.model";
 import action from "../handlers/action";
 import handleError from "../handlers/error";
 import {
   CreateSessionSchema,
   GetCurrentSessionSchema,
   LockParkingSessionSchema,
+  ProcessPaymentSchema,
 } from "../validations";
 import { Slot } from "@/database";
 
@@ -56,7 +57,10 @@ export async function createSession(
       },
     };
   } catch (error) {
+    await session.abortTransaction();
     return handleError(error) as ErrorResponse;
+  } finally {
+    session.endSession();
   }
 }
 
@@ -137,27 +141,35 @@ export async function lockParkingSession(
 
   const { userId, slotId } = validationResult.params!;
 
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
-    const slot = await Slot.findOne({ slotId });
+    const slot = await Slot.findOne({ slotId }).session(session);
     if (!slot) {
       throw new Error("Slot not found");
     }
 
-    const session = await Session.findOneAndUpdate(
+    const updatedSession = await Session.findOneAndUpdate(
       { userId, slotId: slot._id, isActive: true },
       { locked: true },
       { new: true }
     );
 
-    if (!session) {
+    if (!updatedSession) {
       throw new Error("Parking session not found");
     }
+
+    await session.commitTransaction();
 
     return {
       success: true,
       data: null,
     };
   } catch (error) {
+    await session.abortTransaction();
     return handleError(error) as ErrorResponse;
+  } finally {
+    session.endSession();
   }
 }
