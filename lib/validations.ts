@@ -157,6 +157,7 @@ export const SendWelcomeEmailParams = z.object({
 
 export const SendNotificationEmailSchema = z.object({
   userId: z.string().min(1, { message: "User ID is required." }),
+  sessionId: z.string().min(1, { message: "Session ID is required." }),
 });
 
 export const CreateSlotSchema = z.object({

@@ -11,12 +11,14 @@ import {
   Tailwind,
   Text,
 } from "@react-email/components";
+import { formatCurrency } from "@/lib/utils";
 interface Props {
   name: string;
   checkInTime: string;
   checkOutTime: string;
   location: string;
   slotID: string;
+  fee: number;
 }
 
 const NotificationEmail = ({
@@ -25,6 +27,7 @@ const NotificationEmail = ({
   checkOutTime,
   location,
   slotID,
+  fee,
 }: Props) => {
   return (
     <Html>
@@ -65,6 +68,14 @@ const NotificationEmail = ({
             </Section>
             <ul>
               <li className="mb-5 text-lg">
+                <strong className="text-secondary-500">Slot ID:</strong>{" "}
+                {slotID}
+              </li>
+              <li className="mb-5 text-lg">
+                <strong className="text-secondary-500">Location:</strong>{" "}
+                {location}
+              </li>
+              <li className="mb-5 text-lg">
                 <strong className="text-secondary-500">Check-in Time:</strong>{" "}
                 {checkInTime}
               </li>
@@ -73,12 +84,8 @@ const NotificationEmail = ({
                 {checkOutTime}
               </li>
               <li className="mb-5 text-lg">
-                <strong className="text-secondary-500">Location:</strong>{" "}
-                {location}
-              </li>
-              <li className="mb-5 text-lg">
-                <strong className="text-secondary-500">Slot ID:</strong>{" "}
-                {slotID}
+                <strong className="text-secondary-500">Amount Fee:</strong>{" "}
+                {formatCurrency(fee)}
               </li>
             </ul>
             <Section className="bg-primary-500 text-primary-100 px-[18px] py-3 text-center">

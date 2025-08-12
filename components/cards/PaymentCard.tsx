@@ -14,6 +14,7 @@ import { processPayment } from "@/lib/actions/session.action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import ROUTES from "@/constants/routes";
+import { sendNotificationEmail } from "@/lib/actions/email.action";
 
 interface Props {
   checkInTime: Date;
@@ -35,10 +36,16 @@ const PaymentCard = ({ checkInTime, paymentStatus }: Props) => {
 
   const handlePayment = async () => {
     // Implement payment logic here
-    const { success, error } = await processPayment({ fee });
+    const { success, data, error } = await processPayment({ fee });
 
-    if (success) {
+    if (success && data) {
       toast.success("Payment successful");
+
+      await sendNotificationEmail({
+        userId: data.userId,
+        sessionId: data.sessionId,
+      });
+
       router.push(ROUTES.PARKING_SESSION);
     } else {
       toast.error("Payment failed", {

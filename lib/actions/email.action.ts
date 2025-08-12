@@ -1,4 +1,6 @@
-import { User } from "@/database";
+"use server";
+
+import { Session, User } from "@/database";
 import action from "../handlers/action";
 import handleError from "../handlers/error";
 import {
@@ -8,6 +10,8 @@ import {
 import { Resend } from "resend";
 import WelcomeEmail from "@/components/emails/WelcomeEmail";
 import NotificationEmail from "@/components/emails/NotificationEmail";
+import { formatDate } from "../utils";
+import mongoose, { PipelineStage } from "mongoose";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const fromEmail = process.env.FROM_EMAIL || "onboarding@resend.dev";
@@ -65,7 +69,7 @@ export async function sendNotificationEmail(
     return handleError(validationResult) as ErrorResponse;
   }
 
-  const { userId } = validationResult.params!;
+  const { userId, sessionId } = validationResult.params!;
 
   try {
     const user = await User.findById(userId);
@@ -73,20 +77,50 @@ export async function sendNotificationEmail(
 
     const { name, email } = user;
 
-    // Sending with dummy data right now
-    const checkInTime = new Date().toLocaleString();
-    const checkOutTime = new Date(
-      Date.now() + 2 * 60 * 60 * 1000
-    ).toLocaleString();
-    const location = "227 Nguyen Van Cu, District 5, Ho Chi Minh City";
-    const slotID = "S25-3";
+    const pipeline: PipelineStage[] = [
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(sessionId),
+          userId: new mongoose.Types.ObjectId(userId),
+        },
+      },
+      {
+        $lookup: {
+          from: "slots",
+          localField: "slotId",
+          foreignField: "_id",
+          as: "slot",
+        },
+      },
+      { $unwind: "$slot" }, // flatten slot array
+      {
+        $project: {
+          slot: {
+            slotId: "$slot.slotId",
+            location: "$slot.location",
+          },
+          checkInTime: 1,
+          checkOutTime: 1,
+          fee: 1,
+        },
+      },
+    ];
+
+    const [parkingSession] = await Session.aggregate(pipeline);
+
+    const slotID = parkingSession.slot?.slotId || "Unknown Slot";
+    const location = parkingSession.slot?.location || "Unknown Location";
+    const checkInTime = formatDate(parkingSession.checkInTime);
+    const checkOutTime = formatDate(parkingSession.checkOutTime);
+    const fee = parkingSession.fee;
 
     const emailContent = NotificationEmail({
       name,
+      slotID,
+      location,
       checkInTime,
       checkOutTime,
-      location,
-      slotID,
+      fee,
     });
 
     const result = await resend.emails.send({

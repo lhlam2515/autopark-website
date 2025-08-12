@@ -1,7 +1,7 @@
 "use server";
 
 import mongoose, { PipelineStage } from "mongoose";
-import Session, { ISession, ISessionDoc } from "@/database/session.model";
+import Session, { ISessionDoc } from "@/database/session.model";
 import action from "../handlers/action";
 import handleError from "../handlers/error";
 import {
@@ -176,7 +176,7 @@ export async function lockParkingSession(
 
 export async function processPayment(
   params: ProcessPaymentParams
-): Promise<ActionResponse<null>> {
+): Promise<ActionResponse<{ userId: string; sessionId: string }>> {
   const validationResult = await action({
     params,
     schema: ProcessPaymentSchema,
@@ -208,7 +208,7 @@ export async function processPayment(
 
     return {
       success: true,
-      data: null,
+      data: { userId: userId as string, sessionId: updatedSession._id },
     };
   } catch (error) {
     await session.abortTransaction();

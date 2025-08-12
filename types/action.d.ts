@@ -34,6 +34,7 @@ interface SendWelcomeEmailParams {
 
 interface SendNotificationEmailParams {
   userId: string;
+  sessionId: string;
 }
 
 interface CreateSlotParams {
