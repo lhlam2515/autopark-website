@@ -50,6 +50,7 @@ const ParkingSession = async () => {
       if (lock) {
         redirect(ROUTES.PARKING_SESSION);
       } else {
+        await set(child(slotRef, "available"), true);
         redirect(ROUTES.HOME);
       }
     }
