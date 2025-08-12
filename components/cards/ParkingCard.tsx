@@ -10,8 +10,20 @@ import {
   formatDate,
   formatDuration,
 } from "@/lib/utils";
+import { database } from "@/lib/firebase";
+import { set, ref, child } from "firebase/database";
+import { Button } from "../ui/button";
 
-const ParkingCard = ({ checkInTime }: { checkInTime: Date }) => {
+interface Props {
+  slot: {
+    deviceId: string;
+    slotId: string;
+    location: string;
+  };
+  checkInTime: Date;
+}
+
+const ParkingCard = ({ slot, checkInTime }: Props) => {
   const initialElapsed = calculateElapsedTime(checkInTime);
   const initialFee = calculateParkingFee(initialElapsed);
 
@@ -27,12 +39,28 @@ const ParkingCard = ({ checkInTime }: { checkInTime: Date }) => {
     return () => clearInterval(interval);
   }, [elapsed, checkInTime]);
 
+  const handlePingSlot = async () => {
+    const slotIndex = slot.slotId.split("-")[1];
+    const slotRef = ref(
+      database,
+      `/devices/${slot.deviceId}/slots/${slotIndex}`
+    );
+
+    await set(child(slotRef, "ping"), true);
+  };
+
   return (
     <InfoCard title="Parking Status" imgUrl="/icons/clock.svg">
       <div className="flex w-full flex-col gap-2.5 px-4">
         <Entry label="Check-in Time">{formatDate(checkInTime)}</Entry>
         <Entry label="Elapsed Time">{formatDuration(elapsed)}</Entry>
         <Entry label="Parking Fee">{formatCurrency(fee)}</Entry>
+        <Button
+          className="bg-primary-500 hover:bg-primary-400 text-primary-100 text-base font-semibold"
+          onClick={handlePingSlot}
+        >
+          Ping Slot
+        </Button>
       </div>
     </InfoCard>
   );

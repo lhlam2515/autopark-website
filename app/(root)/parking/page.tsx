@@ -68,7 +68,7 @@ const ParkingSession = async () => {
           locked={parkingSession.locked}
         />
         <WeatherCard deviceId={slot.deviceId} />
-        <ParkingCard checkInTime={parkingSession.checkInTime} />
+        <ParkingCard slot={slot} checkInTime={parkingSession.checkInTime} />
         <PaymentCard
           checkInTime={parkingSession.checkInTime}
           paymentStatus={parkingSession.paymentStatus}
