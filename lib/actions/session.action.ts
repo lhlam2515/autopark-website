@@ -208,7 +208,10 @@ export async function processPayment(
 
     return {
       success: true,
-      data: { userId: userId as string, sessionId: updatedSession._id },
+      data: {
+        userId: userId as string,
+        sessionId: updatedSession._id as string,
+      },
     };
   } catch (error) {
     await session.abortTransaction();
