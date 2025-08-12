@@ -39,8 +39,6 @@ const chartConfig = {
 const WeatherCard = ({ deviceId }: { deviceId: string }) => {
   const weatherData = useWeatherData(deviceId);
 
-  console.log(weatherData);
-
   return (
     <InfoCard title="Current Weather" imgUrl="/icons/weather.svg">
       <ChartContainer

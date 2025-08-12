@@ -2,13 +2,6 @@ import { useEffect, useState } from "react";
 import { ref, onValue, off } from "firebase/database";
 import { database } from "@/lib/firebase";
 
-interface WeatherEntry {
-  timestamp: string; // formatted for chart
-  temperature: number;
-  humidity: number;
-  rain: boolean;
-}
-
 export function useWeatherData(deviceId: string) {
   const [data, setData] = useState<WeatherEntry[]>([]);
 

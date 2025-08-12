@@ -29,3 +29,10 @@ interface ParkingSession {
   locked: boolean;
   paymentStatus: "unpaid" | "paid";
 }
+
+interface WeatherEntry {
+  timestamp: string;
+  temperature: number;
+  humidity: number;
+  rain: boolean;
+}
