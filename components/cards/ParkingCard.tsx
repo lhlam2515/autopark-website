@@ -37,7 +37,7 @@ const ParkingCard = ({ slot, checkInTime, paid }: Props) => {
     const interval = setInterval(() => {
       setElapsed(calculateElapsedTime(checkInTime));
       setFee(calculateParkingFee(elapsed));
-    }, 1000); // Update every second
+    }, 60000); // Update every minute
 
     return () => clearInterval(interval);
   }, [elapsed, checkInTime, paid]);
