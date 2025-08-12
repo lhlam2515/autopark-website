@@ -63,3 +63,8 @@ interface LockParkingSessionParams {
 interface ProcessPaymentParams {
   fee: number;
 }
+
+interface VerifyOTPParams {
+  OTP: string;
+  slotId: string;
+}

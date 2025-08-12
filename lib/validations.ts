@@ -187,3 +187,10 @@ export const LockParkingSessionSchema = z.object({
 export const ProcessPaymentSchema = z.object({
   fee: z.number().min(0, { message: "Fee must be a positive number." }),
 });
+
+export const VerifyOTPSchema = z.object({
+  OTP: z
+    .string()
+    .min(6, { message: "OTP must be at least 6 characters long." }),
+  slotId: z.string().min(1, { message: "Slot ID is required." }),
+});

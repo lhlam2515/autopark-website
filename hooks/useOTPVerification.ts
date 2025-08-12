@@ -1,19 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
-import {
-  ref,
-  onValue,
-  off,
-  remove,
-  DataSnapshot,
-  child,
-  set,
-} from "firebase/database";
-import { database } from "@/lib/firebase";
-import { getSlot } from "@/lib/actions/slot.action";
-import { createSession } from "@/lib/actions/session.action";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { verifyOTP } from "@/lib/actions/cloud.action";
 import ROUTES from "@/constants/routes";
+import { useRouter } from "next/navigation";
 
 export function useOTPVerification({ onCleanup }: { onCleanup: () => void }) {
   const [OTP, setOTP] = useState("");
@@ -26,71 +15,36 @@ export function useOTPVerification({ onCleanup }: { onCleanup: () => void }) {
     setSlotId(id);
   }, []);
 
-  const verifyOTP = useCallback(async () => {
+  const handleOTPVerification = useCallback(async () => {
     if (!OTP || !slotId) return;
 
-    const { success, data, error } = await getSlot({ slotId });
-    if (error) {
-      toast.error(error.message);
-      return;
-    }
+    try {
+      const result = await verifyOTP({ OTP, slotId });
 
-    if (success && data) {
-      const { deviceId } = data.slot;
-      const slotIndex = slotId.split("-")[1];
-      const slotRef = ref(database, `devices/${deviceId}/slots/${slotIndex}`);
+      if (result.error) {
+        toast.error(result.error.message || "Verification failed");
+        onCleanup();
+        return;
+      }
 
-      const listener = async (snapshot: DataSnapshot) => {
-        const firebaseOTP = snapshot.val();
-
-        if (!firebaseOTP) {
-          // Don't show error if no OTP yet
-          return;
-        }
-
-        if (firebaseOTP === OTP) {
-          off(slotRef, "value", listener);
-
-          try {
-            // Remove OTP from Firebase
-            await remove(child(slotRef, "OTP"));
-
-            // Create parking session
-            const result = await createSession({
-              slotId: data.slot._id as string,
-            });
-
-            if (result.error) {
-              toast.error(`Failed to create session: ${result.error.message}`);
-              return;
-            }
-
-            const { user } = result.data!;
-
-            // Set user name and availability
-            await set(child(slotRef, "name"), user);
-            await set(child(slotRef, "available"), false);
-
-            toast.success("OTP verified successfully!");
-            router.push(ROUTES.PARKING_SESSION);
-            onCleanup();
-          } catch (error) {
-            const errorMessage =
-              error instanceof Error ? error.message : "Unknown error occurred";
-            toast.error(`Failed to finalize verification: ${errorMessage}`);
-          }
-        } else {
-          toast.error("Invalid OTP. Please try again.");
-        }
-      };
-
-      onValue(child(slotRef, "OTP"), listener);
+      if (result.success) {
+        toast.success("OTP verified successfully!");
+        onCleanup();
+        router.push(ROUTES.PARKING_SESSION);
+      }
+    } catch (error) {
+      // Handle any errors thrown during verification
+      toast.error(
+        error instanceof Error ? error.message : "Verification failed"
+      );
+      onCleanup();
     }
   }, [OTP, slotId, router, onCleanup]);
 
   // Countdown
   useEffect(() => {
     if (!OTP) return;
+
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev === 1) {
@@ -101,13 +55,14 @@ export function useOTPVerification({ onCleanup }: { onCleanup: () => void }) {
         return prev - 1;
       });
     }, 1000);
+
     return () => clearInterval(timer);
   }, [OTP, onCleanup]);
 
   // Auto verify when OTP is set
   useEffect(() => {
-    if (OTP) verifyOTP();
-  }, [OTP, verifyOTP]);
+    if (OTP) handleOTPVerification();
+  }, [OTP, handleOTPVerification]);
 
   return { OTP, countdown, startOTP };
 }
