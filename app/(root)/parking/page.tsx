@@ -53,8 +53,6 @@ const ParkingSession = async () => {
         redirect(ROUTES.HOME);
       }
     }
-
-    redirect(ROUTES.PARKING_SESSION);
   };
 
   return (
