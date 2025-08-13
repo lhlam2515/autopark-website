@@ -10,6 +10,7 @@ import ROUTES from "@/constants/routes";
 import { notFound } from "next/navigation";
 import { auth } from "@/auth";
 import { getUser } from "@/lib/actions/user.action";
+import SubscribeButton from "@/components/SubscribeButton";
 
 const UserProfile = async ({ params }: RouteParams) => {
   const { id } = await params;
@@ -100,17 +101,7 @@ const UserProfile = async ({ params }: RouteParams) => {
                 Edit Personal Information
               </Link>
             </Button>
-            <Button asChild className="bg-primary-500 gap-1.5 rounded-lg p-2">
-              <Link href={ROUTES.EDIT_PROFILE}>
-                <Image
-                  src="/icons/card-edit.svg"
-                  width={24}
-                  height={24}
-                  alt="edit card"
-                />
-                Edit Payment Information
-              </Link>
-            </Button>
+            <SubscribeButton userId={id} />
           </div>
         </InfoCard>
       </div>
