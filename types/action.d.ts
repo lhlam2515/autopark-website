@@ -68,3 +68,12 @@ interface VerifyOTPParams {
   OTP: string;
   slotId: string;
 }
+
+interface UpdatePushTokenParams {
+  userId: string;
+  token: string;
+}
+
+interface GetPushTokenParams {
+  userId: string;
+}
