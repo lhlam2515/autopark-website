@@ -203,3 +203,10 @@ export const UpdatePushTokenSchema = z.object({
 export const GetPushTokenSchema = z.object({
   userId: z.string().min(1, { message: "User ID is required." }),
 });
+
+export const NotificationSchema = z.object({
+  userId: z.string().min(1, { message: "User ID is required." }),
+  title: z.string().min(1, { message: "Title is required." }),
+  message: z.string().min(1, { message: "Message is required." }),
+  link: z.string().url({ message: "Invalid link URL." }).optional(),
+});

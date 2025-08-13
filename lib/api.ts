@@ -18,6 +18,13 @@ export const api = {
         body: JSON.stringify({ user, provider, providerAccountId }),
       }),
   },
+  notifications: {
+    send: ({ userId, title, message, link }: SendNotificationParams) =>
+      fetchHandler(`${API_BASE_URL}/send-notification`, {
+        method: "POST",
+        body: JSON.stringify({ userId, title, message, link }),
+      }),
+  },
   users: {
     getAll: () => fetchHandler(`${API_BASE_URL}/users`),
     getById: (id: string) => fetchHandler(`${API_BASE_URL}/users/${id}`),
