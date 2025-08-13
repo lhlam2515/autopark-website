@@ -1,5 +1,4 @@
 import ROUTES from "@/constants/routes";
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
@@ -7,6 +6,7 @@ import { cn } from "@/lib/utils";
 import MobileNav from "./MobileNav";
 import { auth } from "@/auth";
 import UserAvatar from "@/components/UserAvatar";
+import Notification from "@/components/Notification";
 
 const Navbar = async ({ admin = false }: { admin?: boolean }) => {
   const session = await auth();
@@ -25,12 +25,7 @@ const Navbar = async ({ admin = false }: { admin?: boolean }) => {
       </Link>
 
       <div className="flex items-center justify-between gap-2">
-        <Image
-          src="/icons/notice.svg"
-          alt="Notification"
-          width={24}
-          height={24}
-        />
+        <Notification userId={session?.user?.id || ""} />
         {session?.user?.id && (
           <UserAvatar
             id={session.user.id}
