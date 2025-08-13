@@ -78,7 +78,7 @@ export async function updateUser(
 
 export async function updatePushToken(
   params: UpdatePushTokenParams
-): Promise<ActionResponse<{ success: boolean }>> {
+): Promise<ActionResponse> {
   const validationResult = await action({
     params,
     schema: UpdatePushTokenSchema,
@@ -93,12 +93,7 @@ export async function updatePushToken(
   try {
     await User.findByIdAndUpdate(userId, { pushToken: token });
 
-    return {
-      success: true,
-      data: {
-        success: true,
-      },
-    };
+    return { success: true };
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
