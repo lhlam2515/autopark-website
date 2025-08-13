@@ -4,14 +4,15 @@ import { Message } from "firebase-admin/messaging";
 import handleError from "@/lib/handlers/error";
 import { ValidationError } from "@/lib/http-errors";
 import { NotificationSchema } from "@/lib/validations";
-import { firebaseConfig } from "@/lib/firebase";
 import { NextResponse } from "next/server";
 import { getPushToken } from "@/lib/actions/user.action";
 
 // Initialize Firebase Admin SDK
 if (!admin.apps.length) {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const serviceAccount = require("@/service_key.json");
   admin.initializeApp({
-    credential: admin.credential.cert({ ...firebaseConfig }),
+    credential: admin.credential.cert(serviceAccount),
   });
 }
 
@@ -40,7 +41,7 @@ export async function POST(request: Request) {
         title: title,
         body: message,
       },
-      webpush: link && {
+      webpush: {
         fcmOptions: {
           link,
         },
