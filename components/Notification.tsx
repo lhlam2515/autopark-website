@@ -3,7 +3,7 @@
 import useFcmToken from "@/hooks/useFcmToken";
 import { useRef, useEffect } from "react";
 import Image from "next/image";
-import { updatePushToken } from "@/lib/actions/user.action";
+import { updatePushToken } from "@/lib/actions/cloud.action";
 import { toast } from "sonner";
 
 const Notification = ({ userId }: { userId: string }) => {

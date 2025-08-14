@@ -2,7 +2,7 @@
 
 import { Slot } from "@/database";
 import handleError from "../handlers/error";
-import { VerifyOTPSchema } from "../validations";
+import { UpdatePushTokenSchema, VerifyOTPSchema } from "../validations";
 import {
   child,
   DataSnapshot,
@@ -15,6 +15,7 @@ import {
 import { database } from "../firebase";
 import { createSession } from "./session.action";
 import { getUser } from "./user.action";
+import action from "../handlers/action";
 
 export async function verifyOTP(
   params: VerifyOTPParams
@@ -90,6 +91,31 @@ export async function verifyOTP(
 
       onValue(child(slotRef, "OTP"), listener);
     });
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+
+export async function updatePushToken(
+  params: UpdatePushTokenParams
+): Promise<ActionResponse> {
+  const validationResult = await action({
+    params,
+    schema: UpdatePushTokenSchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { userId, token } = validationResult.params!;
+
+  try {
+    const usersRef = ref(database, `users`);
+
+    await set(usersRef, { [userId]: { fcmToken: token } });
+
+    return { success: true };
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
