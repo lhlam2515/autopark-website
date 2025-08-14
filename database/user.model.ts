@@ -8,7 +8,6 @@ export interface IUser {
   phone?: string;
   cardNumber?: string;
   cardExpiry?: string;
-  pushToken?: string;
 }
 
 export interface IUserDoc extends IUser, Document {}
@@ -21,7 +20,6 @@ const UserSchema = new Schema<IUser>(
     phone: { type: String, default: null },
     cardNumber: { type: String, default: null },
     cardExpiry: { type: String, default: null },
-    pushToken: { type: String, default: null },
   },
   { timestamps: true }
 );

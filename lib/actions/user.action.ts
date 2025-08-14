@@ -3,12 +3,7 @@
 import { User } from "@/database";
 import action from "../handlers/action";
 import handleError from "../handlers/error";
-import {
-  GetPushTokenSchema,
-  GetUserSchema,
-  UpdatePushTokenSchema,
-  UpdateUserSchema,
-} from "../validations";
+import { GetUserSchema, UpdateUserSchema } from "../validations";
 import { IUserDoc } from "@/database/user.model";
 
 export async function getUser(
@@ -69,61 +64,6 @@ export async function updateUser(
       success: true,
       data: {
         user: JSON.parse(JSON.stringify(updatedUser)),
-      },
-    };
-  } catch (error) {
-    return handleError(error) as ErrorResponse;
-  }
-}
-
-export async function updatePushToken(
-  params: UpdatePushTokenParams
-): Promise<ActionResponse> {
-  const validationResult = await action({
-    params,
-    schema: UpdatePushTokenSchema,
-  });
-
-  if (validationResult instanceof Error) {
-    return handleError(validationResult) as ErrorResponse;
-  }
-
-  const { userId, token } = validationResult.params!;
-
-  try {
-    await User.findByIdAndUpdate(userId, { pushToken: token });
-
-    return { success: true };
-  } catch (error) {
-    return handleError(error) as ErrorResponse;
-  }
-}
-
-export async function getPushToken(
-  params: GetPushTokenParams
-): Promise<ActionResponse<{ token: string }>> {
-  const validationResult = await action({
-    params,
-    schema: GetPushTokenSchema,
-  });
-
-  if (validationResult instanceof Error) {
-    return handleError(validationResult) as ErrorResponse;
-  }
-
-  const { userId } = validationResult.params!;
-
-  try {
-    const user = await User.findById(userId);
-
-    if (!user || !user.pushToken) {
-      throw new Error("Push token not found for this user");
-    }
-
-    return {
-      success: true,
-      data: {
-        token: user.pushToken,
       },
     };
   } catch (error) {
