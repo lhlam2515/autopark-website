@@ -73,14 +73,3 @@ interface UpdatePushTokenParams {
   userId: string;
   token: string;
 }
-
-interface GetPushTokenParams {
-  userId: string;
-}
-
-interface SendNotificationParams {
-  userId: string;
-  title: string;
-  message: string;
-  link?: string;
-}
