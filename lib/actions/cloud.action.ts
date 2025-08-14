@@ -14,6 +14,7 @@ import {
 } from "firebase/database";
 import { database } from "../firebase";
 import { createSession } from "./session.action";
+import { getUser } from "./user.action";
 
 export async function verifyOTP(
   params: VerifyOTPParams
@@ -59,8 +60,24 @@ export async function verifyOTP(
               throw new Error(error?.message || "Failed to create session");
             }
 
+            const {
+              success: userSuccess,
+              data: userData,
+              error: userError,
+            } = await getUser({
+              userId: data?.parkingSession?.userId.toString() || "",
+            });
+
+            if (!userSuccess) {
+              throw new Error(userError?.message || "Failed to get user");
+            }
+
             // Set user name and availability
-            await set(child(slotRef, "name"), data?.user);
+            await set(
+              child(slotRef, "name"),
+              userData?.user?.name || "Unknown User"
+            );
+            await set(child(slotRef, "userId"), userData?.user?._id || "");
             await set(child(slotRef, "available"), false);
 
             resolve({ success: true });

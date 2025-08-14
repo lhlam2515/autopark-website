@@ -14,7 +14,7 @@ import { Slot } from "@/database";
 
 export async function createSession(
   params: CreateSessionParams
-): Promise<ActionResponse<{ parkingSession: ISessionDoc; user: string }>> {
+): Promise<ActionResponse<{ parkingSession: ISessionDoc }>> {
   const validationResult = await action({
     params,
     schema: CreateSessionSchema,
@@ -26,7 +26,7 @@ export async function createSession(
   }
 
   const { slotId } = validationResult.params!;
-  const { id: userId, name: userName } = validationResult.session?.user || {};
+  const { id: userId } = validationResult.session?.user || {};
 
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -53,7 +53,6 @@ export async function createSession(
       success: true,
       data: {
         parkingSession: JSON.parse(JSON.stringify(newSession)),
-        user: userName!,
       },
     };
   } catch (error) {
