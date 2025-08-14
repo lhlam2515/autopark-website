@@ -51,6 +51,8 @@ const ParkingSession = async () => {
         redirect(ROUTES.PARKING_SESSION);
       } else {
         await set(child(slotRef, "available"), true);
+        await set(child(slotRef, "name"), null);
+        await set(child(slotRef, "userId"), null);
         redirect(ROUTES.HOME);
       }
     }
