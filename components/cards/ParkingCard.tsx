@@ -30,6 +30,7 @@ const ParkingCard = ({ slot, checkInTime, paid }: Props) => {
 
   const [elapsed, setElapsed] = useState(initialElapsed);
   const [fee, setFee] = useState(initialFee);
+  const [ping, setPing] = useState(false);
 
   useEffect(() => {
     if (paid) return; // Stop updating if paid
@@ -49,8 +50,24 @@ const ParkingCard = ({ slot, checkInTime, paid }: Props) => {
       `/devices/${slot.deviceId}/slots/${slotIndex}`
     );
 
-    await set(child(slotRef, "ping"), true);
+    await set(child(slotRef, "ping"), !ping);
+    setPing(!ping);
   };
+
+  useEffect(() => {
+    const duration = setTimeout(() => {
+      const slotIndex = slot.slotId.split("-")[1];
+      const slotRef = ref(
+        database,
+        `/devices/${slot.deviceId}/slots/${slotIndex}`
+      );
+
+      setPing(false);
+      set(child(slotRef, "ping"), false);
+    }, 5000); // Timeout to reset ping after 5 seconds
+
+    return () => clearTimeout(duration);
+  }, [ping]);
 
   return (
     <InfoCard title="Parking Status" imgUrl="/icons/clock.svg">
@@ -62,7 +79,7 @@ const ParkingCard = ({ slot, checkInTime, paid }: Props) => {
           className="bg-primary-500 hover:bg-primary-400 text-primary-100 text-base font-semibold"
           onClick={handlePingSlot}
         >
-          Ping Slot
+          {!ping ? "Ping Slot" : "Unping Slot"}
         </Button>
       </div>
     </InfoCard>
