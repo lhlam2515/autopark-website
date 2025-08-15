@@ -5,7 +5,7 @@ const ROUTES = {
   DASHBOARD: "/dashboard",
   USERS: "/users",
   STATIONS: "/stations",
-  PROFILE: (id: string) => `/profile/${id}`,
+  PROFILE: "/profile",
   EDIT_PROFILE: "/profile/edit",
   PARKING_SESSION: "/parking",
 };

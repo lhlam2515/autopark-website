@@ -28,11 +28,6 @@ const NavLinks = ({
           (pathname.includes(item.route) && item.route.length > 1) ||
           pathname === item.route;
 
-        if (item.route === "/profile") {
-          if (userId) item.route = `/profile/${userId}`;
-          else return null; // Skip rendering if userId is not provided
-        }
-
         const LinkComponent = (
           <Link
             href={item.route}

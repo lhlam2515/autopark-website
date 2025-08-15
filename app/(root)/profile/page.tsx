@@ -7,26 +7,18 @@ import Entry from "@/components/Entry";
 import ToolBar from "@/components/ToolBar";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { getUser } from "@/lib/actions/user.action";
+import UserCard from "@/components/cards/UserCard";
 
-const UserProfile = async ({ params }: RouteParams) => {
-  const { id } = await params;
-  if (!id) notFound();
-
-  const loggedInUser = await auth();
-  if (!loggedInUser || loggedInUser?.user?.id !== id) {
-    return (
-      <div className="flex h-full w-full items-center justify-center">
-        <p className="text-secondary-500 text-center text-2xl font-bold">
-          You are not authorized to view this profile.
-        </p>
-      </div>
-    );
+const UserProfile = async () => {
+  const session = await auth();
+  if (!session || !session.user) {
+    redirect(ROUTES.SIGN_IN);
   }
 
-  const { success, data, error } = await getUser({ userId: id });
+  const { success, data, error } = await getUser({ userId: session.user.id! });
   if (!success) {
     return (
       <div className="flex h-full w-full items-center justify-center">
@@ -52,25 +44,7 @@ const UserProfile = async ({ params }: RouteParams) => {
       </section>
 
       <div className="flex w-full grow-1 flex-col items-center gap-3 px-3 py-2">
-        <InfoCard title="User Information" imgUrl="/icons/profile.svg">
-          <div className="flex w-full flex-col gap-2.5 px-4">
-            <Entry label="Full name" imgUrl="/icons/person.svg">
-              <p className="text-secondary-100 text-base font-normal">
-                {user.name}
-              </p>
-            </Entry>
-            <Entry label="Email" imgUrl="/icons/email.svg">
-              <p className="text-secondary-100 text-base font-normal">
-                {user.email}
-              </p>
-            </Entry>
-            <Entry label="Phone" imgUrl="/icons/phone.svg">
-              <p className="text-secondary-100 text-base font-normal">
-                {user.phone || "Not provided"}
-              </p>
-            </Entry>
-          </div>
-        </InfoCard>
+        <UserCard name={user.name} email={user.email} phone={user.phone} />
         <InfoCard title="Payment Details" imgUrl="/icons/wallet.svg">
           <div className="flex w-full flex-col gap-2.5 px-4">
             <Entry label="Card number" imgUrl="/icons/card.svg">
