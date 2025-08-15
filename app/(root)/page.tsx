@@ -3,12 +3,11 @@ import InfoCard from "@/components/cards/InfoCard";
 import SlotForm from "@/components/forms/SlotForm";
 import ToolBar from "@/components/ToolBar";
 import { Button } from "@/components/ui/button";
-import { infoCards } from "@/constants/cards";
 import ROUTES from "@/constants/routes";
 import { getCurrentSession } from "@/lib/actions/session.action";
 import Link from "next/link";
 
-export default async function Home() {
+const Home = async () => {
   const session = await auth();
 
   let isParking = false;
@@ -34,19 +33,36 @@ export default async function Home() {
       </section>
 
       <div className="flex w-full grow-1 flex-col items-center gap-3 px-3 py-2">
-        {infoCards.map((card, index) => (
-          <InfoCard
-            key={index}
-            title={card.title}
-            subtitle={card.subtitle}
-            imgUrl={card.imgUrl}
-            button={card?.button}
-          >
-            <p className="text-secondary-100 text-base font-normal">
-              {card.content}
-            </p>
-          </InfoCard>
-        ))}
+        <InfoCard
+          title="Smart Park-In"
+          imgUrl="/icons/vehicle.svg"
+          subtitle="Park securely with one tap"
+        >
+          <p className="text-secondary-100 text-base font-normal">
+            Enter your Slot ID and lock your bike in seconds. Let AutoPark
+            handle the hardware — you&apos;re in control.
+          </p>
+        </InfoCard>
+        <InfoCard
+          title="SafePay Unlock"
+          imgUrl="/icons/payment.svg"
+          subtitle="Unlock after secure payment"
+        >
+          <p className="text-secondary-100 text-base font-normal">
+            Pay for your parking time directly in the app. Once done, your slot
+            unlocks automatically — no delays.
+          </p>
+        </InfoCard>
+        <InfoCard
+          title="Weather Watch"
+          imgUrl="/icons/weather.svg"
+          subtitle="Know before you go"
+        >
+          <p className="text-secondary-100 text-base font-normal">
+            Live updates on rain, temperature, and humidity at your parking
+            spot. Stay informed before heading out.
+          </p>
+        </InfoCard>
       </div>
 
       <ToolBar>
@@ -63,4 +79,6 @@ export default async function Home() {
       </ToolBar>
     </div>
   );
-}
+};
+
+export default Home;
