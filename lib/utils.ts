@@ -25,18 +25,27 @@ export const calculateElapsedTime = (startTime: string | Date) => {
   return elapsed;
 };
 
-export const formatDate = (date: string | Date) => {
+export const formatDate = (date: string | Date, compact: boolean = false) => {
   const d = new Date(date);
   return new Intl.DateTimeFormat(undefined, {
     // `undefined` uses user's locale
     year: "numeric",
     month: "short", // "Aug" instead of "August"
     day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
+    hour: compact ? undefined : "2-digit",
+    minute: compact ? undefined : "2-digit",
+    second: compact ? undefined : "2-digit",
     hour12: false, // 24-hour format
   }).format(d);
+};
+
+export const formatTimeBetween = (startTime: Date, endTime: Date) => {
+  const startHour = startTime.getHours().toString().padStart(2, "0");
+  const startMinute = startTime.getMinutes().toString().padStart(2, "0");
+  const endHour = endTime.getHours().toString().padStart(2, "0");
+  const endMinute = endTime.getMinutes().toString().padStart(2, "0");
+
+  return `${startHour}:${startMinute} - ${endHour}:${endMinute}`;
 };
 
 export const formatDuration = (duration: number) => {

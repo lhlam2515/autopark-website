@@ -36,3 +36,11 @@ interface WeatherEntry {
   humidity: number;
   rain: boolean;
 }
+
+interface HistoryEntry {
+  slotId: string;
+  checkInTime: Date;
+  checkOutTime: Date;
+  fee: number;
+  paymentStatus: "unpaid" | "paid";
+}
