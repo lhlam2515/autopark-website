@@ -2,7 +2,6 @@ import React from "react";
 import Link from "next/link";
 
 import InfoCard from "@/components/cards/InfoCard";
-import Entry from "@/components/Entry";
 import ToolBar from "@/components/ToolBar";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
@@ -12,6 +11,7 @@ import { getUser } from "@/lib/actions/user.action";
 import UserCard from "@/components/cards/UserCard";
 import EditInfo from "@/components/dialog/EditInfo";
 import EditCredit from "@/components/dialog/EditCredit";
+import CreditCard from "@/components/cards/CreditCard";
 
 const UserProfile = async () => {
   const session = await auth();
@@ -46,22 +46,7 @@ const UserProfile = async () => {
 
       <div className="flex w-full grow-1 flex-col items-center gap-3 px-3 py-2">
         <UserCard name={user.name} email={user.email} phone={user.phone} />
-        <InfoCard title="Payment Details" imgUrl="/icons/wallet.svg">
-          <div className="flex w-full flex-col gap-2.5 px-4">
-            <Entry label="Card number" imgUrl="/icons/card.svg">
-              <p className="text-secondary-100 text-base font-normal">
-                {user?.cardNumber
-                  ? user.cardNumber.slice(7).replace(/\d(?=\d{4})/g, "*")
-                  : "Not provided"}
-              </p>
-            </Entry>
-            <Entry label="Expiry" imgUrl="/icons/clock.svg">
-              <p className="text-secondary-100 text-base font-normal">
-                {user?.cardExpiry || "Not provided"}
-              </p>
-            </Entry>
-          </div>
-        </InfoCard>
+        <CreditCard cardNumber={user.cardNumber} cardExpiry={user.cardExpiry} />
         <InfoCard title="Edit Profile" imgUrl="/icons/edit.svg">
           <div className="flex w-full flex-col gap-2.5 px-4">
             <EditInfo
