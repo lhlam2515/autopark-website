@@ -3,7 +3,7 @@ import React from "react";
 
 const UserLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <main className="bg-primary-300 relative">
+    <main className="bg-primary-300 relative w-full">
       <Navbar />
 
       <div className="flex">
