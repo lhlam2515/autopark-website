@@ -48,7 +48,7 @@ const MobileNav = async ({ tool = false }: { tool?: boolean }) => {
         <div className="flex h-full flex-col justify-between overflow-y-auto">
           <SheetClose asChild>
             <section className="flex h-full flex-col gap-4 py-6">
-              <NavLinks isMobileNav userId={userId} />
+              <NavLinks isMobileNav />
             </section>
           </SheetClose>
 

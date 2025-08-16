@@ -67,7 +67,7 @@ const ParkingCard = ({ slot, checkInTime, paid }: Props) => {
     }, 5000); // Timeout to reset ping after 5 seconds
 
     return () => clearTimeout(duration);
-  }, [ping]);
+  }, [ping, slot.deviceId, slot.slotId]);
 
   return (
     <InfoCard title="Parking Status" imgUrl="/icons/clock.svg">

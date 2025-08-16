@@ -1,7 +1,7 @@
 "use server";
 
 import mongoose from "mongoose";
-import Slot, { ISlot, ISlotDoc } from "@/database/slot.model";
+import Slot, { ISlot } from "@/database/slot.model";
 import action from "../handlers/action";
 import handleError from "../handlers/error";
 import { CreateSlotSchema, GetSlotSchema } from "../validations";
