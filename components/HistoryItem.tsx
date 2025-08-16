@@ -32,11 +32,18 @@ const HistoryItem = ({ entry }: { entry: HistoryEntry }) => {
         <p className="text-secondary-500 text-base font-normal">
           {formatDate(entry.checkInTime, true)}
         </p>
+        {entry.checkOutTime ? (
+          <p className="text-secondary-500 text-base font-normal">
+            {formatTimeBetween(entry.checkInTime, entry.checkOutTime)}
+          </p>
+        ) : (
+          <p className="text-secondary-500 text-base font-normal">
+            {formatTimeBetween(entry.checkInTime, new Date())}
+          </p>
+        )}
+
         <p className="text-secondary-500 text-base font-normal">
-          {formatTimeBetween(entry.checkInTime, entry.checkOutTime)}
-        </p>
-        <p className="text-secondary-500 text-base font-normal">
-          {formatCurrency(entry.fee)}
+          {entry.fee ? formatCurrency(entry.fee) : "Unknown"}
         </p>
       </div>
     </div>

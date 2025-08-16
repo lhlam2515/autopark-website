@@ -39,11 +39,18 @@ export const formatDate = (date: string | Date, compact: boolean = false) => {
   }).format(d);
 };
 
-export const formatTimeBetween = (startTime: Date, endTime: Date) => {
-  const startHour = startTime.getHours().toString().padStart(2, "0");
-  const startMinute = startTime.getMinutes().toString().padStart(2, "0");
-  const endHour = endTime.getHours().toString().padStart(2, "0");
-  const endMinute = endTime.getMinutes().toString().padStart(2, "0");
+export const formatTimeBetween = (
+  startTime: string | Date,
+  endTime: string | Date
+) => {
+  // Convert to Date objects if they're strings
+  const startDate = new Date(startTime);
+  const endDate = new Date(endTime);
+
+  const startHour = startDate.getHours().toString().padStart(2, "0");
+  const startMinute = startDate.getMinutes().toString().padStart(2, "0");
+  const endHour = endDate.getHours().toString().padStart(2, "0");
+  const endMinute = endDate.getMinutes().toString().padStart(2, "0");
 
   return `${startHour}:${startMinute} - ${endHour}:${endMinute}`;
 };
