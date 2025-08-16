@@ -36,7 +36,7 @@ export async function verifyOTP(
           const receivedOTP = snapshot.val();
           if (receivedOTP && receivedOTP != "") {
             if (receivedOTP !== OTP) {
-              throw new Error("Invalid OTP");
+              resolve({ success: false });
             }
 
             off(child(slotRef, "OTP"), "value", listener);
