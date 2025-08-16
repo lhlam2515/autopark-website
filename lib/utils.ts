@@ -17,6 +17,15 @@ export const calculateParkingFee = (duration: number) => {
   return hours * ratePerHour + 1000;
 };
 
+export const calculateDuration = (
+  startTime: string | Date,
+  endTime: string | Date
+) => {
+  const start = new Date(startTime);
+  const end = new Date(endTime);
+  return Math.floor((end.getTime() - start.getTime()) / 1000);
+};
+
 export const calculateElapsedTime = (startTime: string | Date) => {
   const now = new Date();
   const elapsed = Math.floor(

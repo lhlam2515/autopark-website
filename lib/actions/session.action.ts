@@ -7,10 +7,12 @@ import handleError from "../handlers/error";
 import {
   CreateSessionSchema,
   GetCurrentSessionSchema,
+  GetParkingHistorySchema,
   LockParkingSessionSchema,
   ProcessPaymentSchema,
 } from "../validations";
 import { Slot } from "@/database";
+import { calculateDuration } from "../utils";
 
 export async function createSession(
   params: CreateSessionParams
@@ -118,6 +120,86 @@ export async function getCurrentSession(
       success: true,
       data: {
         session: JSON.parse(JSON.stringify(detailedSession)),
+      },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+
+export async function getParkingHistory(
+  params: GetParkingHistoryParams
+): Promise<
+  ActionResponse<{
+    totalSessions: number;
+    totalSpent: number;
+    averageDuration: number;
+    history: HistoryEntry[];
+  }>
+> {
+  const validationResult = await action({
+    params,
+    schema: GetParkingHistorySchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { userId } = validationResult.params!;
+
+  try {
+    const pipeline: PipelineStage[] = [
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+        },
+      },
+      {
+        $lookup: {
+          from: "slots",
+          localField: "slotId",
+          foreignField: "_id",
+          as: "slot",
+        },
+      },
+      { $unwind: "$slot" },
+      {
+        $project: {
+          slotId: "$slot.slotId",
+          checkInTime: 1,
+          checkOutTime: 1,
+          fee: 1,
+          paymentStatus: 1,
+        },
+      },
+      {
+        $sort: {
+          checkInTime: -1,
+        },
+      },
+    ];
+
+    const history = await Session.aggregate(pipeline);
+
+    const totalSessions = history.length;
+    let totalSpent = 0;
+    let averageDuration = 0;
+
+    history.forEach(({ checkInTime, checkOutTime, fee }) => {
+      const duration = calculateDuration(checkInTime, checkOutTime);
+      totalSpent += fee || 0;
+      averageDuration += duration;
+    });
+    averageDuration = totalSessions > 0 ? averageDuration / totalSessions : 0;
+
+    return {
+      success: true,
+      data: {
+        totalSessions,
+        totalSpent,
+        averageDuration,
+        history: JSON.parse(JSON.stringify(history)),
       },
     };
   } catch (error) {

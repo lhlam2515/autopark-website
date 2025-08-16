@@ -181,6 +181,10 @@ export const GetCurrentSessionSchema = z.object({
   userId: z.string().min(1, { message: "User ID is required." }),
 });
 
+export const GetParkingHistorySchema = z.object({
+  userId: z.string().min(1, { message: "User ID is required." }),
+});
+
 export const LockParkingSessionSchema = z.object({
   userId: z.string().min(1, { message: "User ID is required." }),
   slotId: z.string().min(1, { message: "Slot ID is required." }),

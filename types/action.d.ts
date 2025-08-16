@@ -54,6 +54,10 @@ interface CreateSessionParams {
 interface GetCurrentSessionParams {
   userId: string;
 }
+
+interface GetParkingHistoryParams {
+  userId: string;
+}
 interface LockParkingSessionParams {
   userId: string;
   slotId: string;
