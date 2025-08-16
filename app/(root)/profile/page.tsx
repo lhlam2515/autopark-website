@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 
 import InfoCard from "@/components/cards/InfoCard";
@@ -11,6 +10,8 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { getUser } from "@/lib/actions/user.action";
 import UserCard from "@/components/cards/UserCard";
+import EditInfo from "@/components/dialog/EditInfo";
+import EditCredit from "@/components/dialog/EditCredit";
 
 const UserProfile = async () => {
   const session = await auth();
@@ -63,17 +64,15 @@ const UserProfile = async () => {
         </InfoCard>
         <InfoCard title="Edit Profile" imgUrl="/icons/edit.svg">
           <div className="flex w-full flex-col gap-2.5 px-4">
-            <Button asChild className="bg-primary-500 gap-1.5 rounded-lg p-2">
-              <Link href={ROUTES.EDIT_PROFILE}>
-                <Image
-                  src="/icons/profile-edit.svg"
-                  width={24}
-                  height={24}
-                  alt="edit profile"
-                />
-                Edit Personal Information
-              </Link>
-            </Button>
+            <EditInfo
+              name={user.name}
+              username={user.username}
+              phone={user.phone}
+            />
+            <EditCredit
+              cardNumber={user.cardNumber}
+              cardExpiry={user.cardExpiry}
+            />
           </div>
         </InfoCard>
       </div>
