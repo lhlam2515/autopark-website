@@ -13,9 +13,9 @@ import {
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useOTPVerification } from "@/hooks/useOTPVerification";
-import OTPForm from "./OTPForm";
+import OTPForm from "../forms/OTPForm";
 
-export default function SlotForm() {
+export default function EnterSlot() {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const cleanup = useCallback(() => {

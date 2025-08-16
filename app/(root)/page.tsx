@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import InfoCard from "@/components/cards/InfoCard";
-import SlotForm from "@/components/forms/SlotForm";
+import EnterSlot from "@/components/dialog/EnterSlot";
 import ToolBar from "@/components/ToolBar";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
@@ -74,7 +74,7 @@ const Home = async () => {
             <Link href={ROUTES.PARKING_SESSION}>Go to Parking Session</Link>
           </Button>
         ) : (
-          <SlotForm />
+          <EnterSlot />
         )}
       </ToolBar>
     </div>
