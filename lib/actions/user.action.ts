@@ -38,7 +38,7 @@ export async function getUser(
 
 export async function updateUser(
   params: UpdateUserParams
-): Promise<ActionResponse<{ user: IUserDoc }>> {
+): Promise<ActionResponse> {
   const validationResult = await action({
     params,
     schema: UpdateUserSchema,
@@ -60,12 +60,9 @@ export async function updateUser(
       { new: true }
     );
 
-    return {
-      success: true,
-      data: {
-        user: JSON.parse(JSON.stringify(updatedUser)),
-      },
-    };
+    if (!updatedUser) throw new Error("User not found");
+
+    return { success: true };
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }

@@ -102,7 +102,7 @@ export const SigninWithOAuthSchema = z.object({
   }),
 });
 
-export const ProfileSchema = z.object({
+export const InfoSchema = z.object({
   name: z.string().min(1, { message: "Name is required." }),
   username: z
     .string()
@@ -115,6 +115,9 @@ export const ProfileSchema = z.object({
     .string()
     .regex(/^\d{10}$/, { message: "Phone number must be 10 digits long." })
     .optional(),
+});
+
+export const CreditSchema = z.object({
   cardNumber: z
     .string()
     .regex(/^\d{16}$/, { message: "Card number must be 16 digits long." })
