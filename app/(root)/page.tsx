@@ -73,8 +73,15 @@ const Home = async () => {
           >
             <Link href={ROUTES.PARKING_SESSION}>Go to Parking Session</Link>
           </Button>
+        ) : session?.user ? (
+          <EnterSlot userId={session.user.id! as string} />
         ) : (
-          <EnterSlot />
+          <Button
+            asChild
+            className="bg-primary-500 text-primary-100 grow p-2 text-base font-bold"
+          >
+            <Link href={ROUTES.SIGN_IN}>Login</Link>
+          </Button>
         )}
       </ToolBar>
     </div>

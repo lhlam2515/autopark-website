@@ -48,6 +48,7 @@ interface GetSlotParams {
 }
 
 interface CreateSessionParams {
+  userId: string;
   slotId: string;
 }
 
@@ -71,6 +72,7 @@ interface ProcessPaymentParams {
 interface VerifyOTPParams {
   OTP: string;
   slotId: string;
+  userId: string;
 }
 
 interface UpdatePushTokenParams {

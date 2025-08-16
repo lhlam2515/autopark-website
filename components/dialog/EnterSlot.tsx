@@ -15,7 +15,7 @@ import Image from "next/image";
 import { useOTPVerification } from "@/hooks/useOTPVerification";
 import OTPForm from "../forms/OTPForm";
 
-export default function EnterSlot() {
+export default function EnterSlot({ userId }: { userId: string }) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const cleanup = useCallback(() => {
@@ -23,6 +23,7 @@ export default function EnterSlot() {
   }, []);
 
   const { OTP, countdown, startOTP } = useOTPVerification({
+    userId,
     onCleanup: cleanup,
   });
 

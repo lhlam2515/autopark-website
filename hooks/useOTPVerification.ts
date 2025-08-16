@@ -4,7 +4,13 @@ import { verifyOTP } from "@/lib/actions/cloud.action";
 import ROUTES from "@/constants/routes";
 import { useRouter } from "next/navigation";
 
-export function useOTPVerification({ onCleanup }: { onCleanup: () => void }) {
+export function useOTPVerification({
+  userId,
+  onCleanup,
+}: {
+  userId: string;
+  onCleanup: () => void;
+}) {
   const [OTP, setOTP] = useState("");
   const [slotId, setSlotId] = useState("");
   const [countdown, setCountdown] = useState(60);
@@ -19,16 +25,20 @@ export function useOTPVerification({ onCleanup }: { onCleanup: () => void }) {
     if (!OTP || !slotId) return;
 
     try {
-      const result = await verifyOTP({ OTP, slotId });
+      const result = await verifyOTP({ OTP, slotId, userId });
 
       if (result.error) {
         toast.error(result.error.message || "Verification failed");
+        setOTP("");
+        setSlotId("");
         onCleanup();
         return;
       }
 
       if (result.success) {
         toast.success("OTP verified successfully!");
+        setOTP("");
+        setSlotId("");
         onCleanup();
         router.push(ROUTES.PARKING_SESSION);
       }
@@ -37,9 +47,11 @@ export function useOTPVerification({ onCleanup }: { onCleanup: () => void }) {
       toast.error(
         error instanceof Error ? error.message : "Verification failed"
       );
+      setOTP("");
+      setSlotId("");
       onCleanup();
     }
-  }, [OTP, slotId, router, onCleanup]);
+  }, [OTP, slotId, userId, onCleanup, router]);
 
   // Countdown
   useEffect(() => {
@@ -49,6 +61,8 @@ export function useOTPVerification({ onCleanup }: { onCleanup: () => void }) {
       setCountdown((prev) => {
         if (prev === 1) {
           clearInterval(timer);
+          setOTP("");
+          setSlotId("");
           onCleanup();
           return 60;
         }

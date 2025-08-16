@@ -22,15 +22,13 @@ export async function createSession(
   const validationResult = await action({
     params,
     schema: CreateSessionSchema,
-    authorize: true,
   });
 
   if (validationResult instanceof Error) {
     return handleError(validationResult) as ErrorResponse;
   }
 
-  const { slotId } = validationResult.params!;
-  const { id: userId } = validationResult.session?.user || {};
+  const { userId, slotId } = validationResult.params!;
 
   const session = await mongoose.startSession();
   session.startTransaction();

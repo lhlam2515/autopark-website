@@ -174,6 +174,7 @@ export const GetSlotSchema = z.object({
 });
 
 export const CreateSessionSchema = z.object({
+  userId: z.string().min(1, { message: "User ID is required." }),
   slotId: z.string().min(1, { message: "Slot ID is required." }),
 });
 
@@ -200,6 +201,7 @@ export const VerifyOTPSchema = z.object({
     .string()
     .min(6, { message: "OTP must be at least 6 characters long." }),
   slotId: z.string().min(1, { message: "Slot ID is required." }),
+  userId: z.string().min(1, { message: "User ID is required." }),
 });
 
 export const UpdatePushTokenSchema = z.object({

@@ -17,7 +17,7 @@ export async function verifyOTP(
     return handleError(validation.error.flatten().fieldErrors) as ErrorResponse;
   }
 
-  const { OTP, slotId } = validation.data;
+  const { OTP, slotId, userId } = validation.data;
 
   try {
     const slot = await Slot.findOne({ slotId });
@@ -34,7 +34,7 @@ export async function verifyOTP(
       const listener = async (snapshot: DataSnapshot) => {
         try {
           const receivedOTP = snapshot.val();
-          if (receivedOTP) {
+          if (receivedOTP && receivedOTP != "") {
             if (receivedOTP !== OTP) {
               throw new Error("Invalid OTP");
             }
@@ -46,6 +46,7 @@ export async function verifyOTP(
 
             // Create parking session
             const { success, data, error } = await createSession({
+              userId,
               slotId: slot.id as string,
             });
 
