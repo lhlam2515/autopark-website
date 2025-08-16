@@ -8,88 +8,19 @@ import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
 import Entry from "@/components/Entry";
 import { formatCurrency, formatDuration } from "@/lib/utils";
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
+import { getParkingHistory } from "@/lib/actions/session.action";
 
-const summary = {
-  totalSessions: 0,
-  totalSpent: 0,
-  averageDuration: 0,
-};
+const HistoryPage = async () => {
+  const session = await auth();
+  if (!session || !session.user) {
+    redirect(ROUTES.SIGN_IN);
+  }
 
-const history: HistoryEntry[] = [
-  {
-    slotId: "S25-1",
-    checkInTime: new Date("2023-10-01T08:00:00Z"),
-    checkOutTime: new Date("2023-10-01T09:00:00Z"),
-    fee: 1000,
-    paymentStatus: "paid",
-  },
-  {
-    slotId: "S25-1",
-    checkInTime: new Date("2023-10-01T08:00:00Z"),
-    checkOutTime: new Date("2023-10-01T09:00:00Z"),
-    fee: 1000,
-    paymentStatus: "paid",
-  },
-  {
-    slotId: "S25-1",
-    checkInTime: new Date("2023-10-01T08:00:00Z"),
-    checkOutTime: new Date("2023-10-01T09:00:00Z"),
-    fee: 1000,
-    paymentStatus: "paid",
-  },
-  {
-    slotId: "S25-1",
-    checkInTime: new Date("2023-10-01T08:00:00Z"),
-    checkOutTime: new Date("2023-10-01T09:00:00Z"),
-    fee: 1000,
-    paymentStatus: "paid",
-  },
-  {
-    slotId: "S25-1",
-    checkInTime: new Date("2023-10-01T08:00:00Z"),
-    checkOutTime: new Date("2023-10-01T09:00:00Z"),
-    fee: 1000,
-    paymentStatus: "paid",
-  },
-  {
-    slotId: "S25-1",
-    checkInTime: new Date("2023-10-01T08:00:00Z"),
-    checkOutTime: new Date("2023-10-01T09:00:00Z"),
-    fee: 1000,
-    paymentStatus: "paid",
-  },
-  {
-    slotId: "S25-1",
-    checkInTime: new Date("2023-10-01T08:00:00Z"),
-    checkOutTime: new Date("2023-10-01T09:00:00Z"),
-    fee: 1000,
-    paymentStatus: "paid",
-  },
-  {
-    slotId: "S25-1",
-    checkInTime: new Date("2023-10-01T08:00:00Z"),
-    checkOutTime: new Date("2023-10-01T09:00:00Z"),
-    fee: 1000,
-    paymentStatus: "paid",
-  },
-  {
-    slotId: "S25-1",
-    checkInTime: new Date("2023-10-01T08:00:00Z"),
-    checkOutTime: new Date("2023-10-01T09:00:00Z"),
-    fee: 1000,
-    paymentStatus: "paid",
-  },
+  const { data } = await getParkingHistory({ userId: session.user.id! });
+  const { totalSessions, totalSpent, averageDuration, history } = data!;
 
-  {
-    slotId: "S25-1",
-    checkInTime: new Date("2023-10-01T08:00:00Z"),
-    checkOutTime: new Date("2023-10-01T09:00:00Z"),
-    fee: 1000,
-    paymentStatus: "paid",
-  },
-];
-
-const HistoryPage = () => {
   return (
     <div className="flex h-full w-full flex-col items-center gap-4">
       <section className="mt-2.5 flex w-full flex-col items-start justify-center px-2">
@@ -111,17 +42,17 @@ const HistoryPage = () => {
           <div className="flex w-full flex-col gap-2.5 px-4">
             <Entry label="Total Sessions">
               <p className="text-secondary-100 text-base font-normal">
-                {summary.totalSessions}
+                {totalSessions}
               </p>
             </Entry>
             <Entry label="Total Spent">
               <p className="text-secondary-100 text-base font-normal">
-                {formatCurrency(summary.totalSpent)}
+                {formatCurrency(totalSpent)}
               </p>
             </Entry>
             <Entry label="Average Duration">
               <p className="text-secondary-100 text-base font-normal">
-                {formatDuration(summary.averageDuration)}
+                {formatDuration(averageDuration)}
               </p>
             </Entry>
           </div>
