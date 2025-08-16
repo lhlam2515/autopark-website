@@ -13,6 +13,8 @@ import {
 } from "../validations";
 import { Slot } from "@/database";
 import { calculateDuration } from "../utils";
+import { child, ref, set } from "firebase/database";
+import { database } from "../firebase";
 
 export async function createSession(
   params: CreateSessionParams
@@ -209,7 +211,7 @@ export async function getParkingHistory(
 
 export async function lockParkingSession(
   params: LockParkingSessionParams
-): Promise<ActionResponse<null>> {
+): Promise<ActionResponse> {
   const validationResult = await action({
     params,
     schema: LockParkingSessionSchema,
@@ -243,10 +245,21 @@ export async function lockParkingSession(
 
     await session.commitTransaction();
 
-    return {
-      success: true,
-      data: null,
-    };
+    const slotIndex = slotId.split("-")[1];
+    const slotRef = ref(
+      database,
+      `/devices/${slot.deviceId}/slots/${slotIndex}`
+    );
+
+    await set(child(slotRef, "locked"), lock);
+
+    if (!lock) {
+      await set(child(slotRef, "available"), true);
+      await set(child(slotRef, "name"), "");
+      await set(child(slotRef, "userId"), null);
+    }
+
+    return { success: true };
   } catch (error) {
     await session.abortTransaction();
     return handleError(error) as ErrorResponse;

@@ -13,8 +13,6 @@ import ParkingCard from "@/components/cards/ParkingCard";
 import PaymentCard from "@/components/cards/PaymentCard";
 import WeatherCard from "@/components/cards/WeatherCard";
 import { cn } from "@/lib/utils";
-import { database } from "@/lib/firebase";
-import { child, ref, set } from "firebase/database";
 
 const ParkingSession = async () => {
   const session = await auth();
@@ -39,20 +37,9 @@ const ParkingSession = async () => {
     });
 
     if (success) {
-      const slotIndex = slot.slotId.split("-")[1];
-      const slotRef = ref(
-        database,
-        `/devices/${slot.deviceId}/slots/${slotIndex}`
-      );
-
-      await set(child(slotRef, "locked"), lock);
-
       if (lock) {
         redirect(ROUTES.PARKING_SESSION);
       } else {
-        await set(child(slotRef, "available"), true);
-        await set(child(slotRef, "name"), null);
-        await set(child(slotRef, "userId"), null);
         redirect(ROUTES.HOME);
       }
     }

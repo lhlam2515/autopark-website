@@ -3,15 +3,7 @@
 import { Slot } from "@/database";
 import handleError from "../handlers/error";
 import { UpdatePushTokenSchema, VerifyOTPSchema } from "../validations";
-import {
-  child,
-  DataSnapshot,
-  off,
-  onValue,
-  ref,
-  remove,
-  set,
-} from "firebase/database";
+import { child, DataSnapshot, off, onValue, ref, set } from "firebase/database";
 import { database } from "../firebase";
 import { createSession } from "./session.action";
 import { getUser } from "./user.action";
@@ -50,7 +42,7 @@ export async function verifyOTP(
             off(child(slotRef, "OTP"), "value", listener);
 
             // Remove OTP from Firebase
-            await remove(child(slotRef, "OTP"));
+            await set(child(slotRef, "OTP"), "");
 
             // Create parking session
             const { success, data, error } = await createSession({
