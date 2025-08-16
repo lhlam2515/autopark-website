@@ -106,7 +106,7 @@ export async function updatePushToken(
   try {
     const usersRef = ref(database, `users`);
 
-    await set(usersRef, { [userId]: { fcmToken: token } });
+    await set(child(usersRef, userId), { fcmToken: token });
 
     return { success: true };
   } catch (error) {
