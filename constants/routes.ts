@@ -6,7 +6,6 @@ const ROUTES = {
   USERS: "/users",
   STATIONS: "/stations",
   PROFILE: "/profile",
-  EDIT_PROFILE: "/profile/edit",
   PARKING_SESSION: "/parking",
 };
 
