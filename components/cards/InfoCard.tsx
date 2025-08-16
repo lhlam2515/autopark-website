@@ -37,7 +37,7 @@ const InfoCard = ({ title, subtitle, imgUrl, children, className }: Props) => {
           )}
         </CardDescription>
       </CardHeader>
-      <CardContent className="h-full w-full overflow-y-auto px-1">
+      <CardContent className="custom-scrollbar h-full w-full overflow-y-auto px-1">
         {children}
       </CardContent>
     </Card>
