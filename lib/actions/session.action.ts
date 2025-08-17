@@ -67,7 +67,7 @@ export async function createSession(
 
 export async function getCurrentSession(
   params: GetCurrentSessionParams
-): Promise<ActionResponse<{ session: ParkingSession }>> {
+): Promise<ActionResponse<{ session?: ParkingSession }>> {
   const validationResult = await action({
     params,
     schema: GetCurrentSessionSchema,
@@ -112,14 +112,12 @@ export async function getCurrentSession(
 
     const [detailedSession] = await Session.aggregate(pipeline);
 
-    if (!detailedSession) {
-      throw new Error("Parking session not found");
-    }
-
     return {
       success: true,
       data: {
-        session: JSON.parse(JSON.stringify(detailedSession)),
+        session: detailedSession
+          ? JSON.parse(JSON.stringify(detailedSession))
+          : undefined,
       },
     };
   } catch (error) {
