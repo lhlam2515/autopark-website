@@ -12,6 +12,8 @@ import { generateOTP } from "@/lib/utils";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { checkSlotAvailability } from "@/lib/actions/slot.action";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   slotId: z
@@ -30,8 +32,26 @@ const OTPForm = ({ onGetOTP }: Props) => {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    const otp = generateOTP();
-    onGetOTP(otp, values.slotId);
+    checkSlotAvailability({
+      slotId: values.slotId,
+    })
+      .then(({ success, data }) => {
+        if (!success) {
+          toast.error("Failed to check slot availability.");
+          return;
+        }
+
+        if (data && !data.isAvailable) {
+          toast.error("Slot ID is not available.");
+        } else {
+          toast.success("Slot ID is available.");
+          const otp = generateOTP();
+          onGetOTP(otp, values.slotId);
+        }
+      })
+      .finally(() => {
+        form.reset();
+      });
   };
 
   return (

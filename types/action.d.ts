@@ -85,3 +85,7 @@ interface PingSlotParams {
   slotId: string;
   ping?: boolean;
 }
+
+interface CheckSlotAvailabilityParams {
+  slotId: string;
+}

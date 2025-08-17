@@ -214,3 +214,7 @@ export const PingSlotSchema = z.object({
   slotId: z.string().min(1, { message: "Slot ID is required." }),
   ping: z.boolean().optional().default(true),
 });
+
+export const CheckSlotAvailabilitySchema = z.object({
+  slotId: z.string().min(1, { message: "Slot ID is required." }),
+});

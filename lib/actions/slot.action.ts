@@ -1,10 +1,14 @@
 "use server";
 
-import mongoose from "mongoose";
+import mongoose, { PipelineStage } from "mongoose";
 import Slot, { ISlot } from "@/database/slot.model";
 import action from "../handlers/action";
 import handleError from "../handlers/error";
-import { CreateSlotSchema, GetSlotSchema } from "../validations";
+import {
+  CheckSlotAvailabilitySchema,
+  CreateSlotSchema,
+  GetSlotSchema,
+} from "../validations";
 import { NotFoundError } from "../http-errors";
 
 export const createSlot = async (
@@ -98,6 +102,49 @@ export const getSlot = async (
       success: true,
       data: {
         slot: JSON.parse(JSON.stringify(slot)),
+      },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+};
+
+export const checkSlotAvailability = async (
+  params: CheckSlotAvailabilityParams
+): Promise<ActionResponse<{ isAvailable: boolean }>> => {
+  const validationResult = await action({
+    params,
+    schema: CheckSlotAvailabilitySchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { slotId } = validationResult.params!;
+
+  try {
+    const pipeline: PipelineStage[] = [
+      { $match: { slotId } },
+      {
+        $lookup: {
+          from: "sessions",
+          localField: "_id",
+          foreignField: "slotId",
+          as: "session",
+        },
+      },
+      { $unwind: "$session" },
+      { $project: { isActive: "$session.isActive" } },
+    ];
+
+    const activatedSessions = await Slot.aggregate(pipeline);
+    const isAvailable = !activatedSessions.some((session) => session.isActive);
+
+    return {
+      success: true,
+      data: {
+        isAvailable,
       },
     };
   } catch (error) {
