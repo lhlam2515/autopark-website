@@ -38,7 +38,7 @@ const MobileNav = async ({ tool = false }: { tool?: boolean }) => {
       >
         <SheetTitle className="hidden">Navigation</SheetTitle>
         {!tool && (
-          <Link href={ROUTES.DASHBOARD}>
+          <Link href={ROUTES.HOME}>
             <p className="text-secondary-500 text-3xl font-bold max-sm:text-2xl">
               Auto<span className="text-secondary-100">Park</span>
             </p>
