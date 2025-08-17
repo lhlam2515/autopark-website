@@ -36,7 +36,7 @@ export const calculateElapsedTime = (startTime: string | Date) => {
 
 export const formatDate = (date: string | Date, compact: boolean = false) => {
   const d = new Date(date);
-  return new Intl.DateTimeFormat(undefined, {
+  return new Intl.DateTimeFormat("en-GB", {
     // `undefined` uses user's locale
     month: "short", // "Aug" instead of "August"
     day: "numeric",
@@ -54,7 +54,7 @@ export const formatTimeBetween = (
   const startDate = new Date(startTime);
   const endDate = new Date(endTime);
 
-  const formatter = new Intl.DateTimeFormat(undefined, {
+  const formatter = new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
