@@ -43,7 +43,7 @@ const WeatherCard = ({ deviceId }: { deviceId: string }) => {
     <InfoCard title="Current Weather" imgUrl="/icons/weather.svg">
       <ChartContainer
         config={chartConfig}
-        className="max-h-[300px] min-h-[200px] w-full"
+        className="aspect-auto h-full max-h-[300px] min-h-[200px] w-full"
       >
         <ComposedChart
           accessibilityLayer
