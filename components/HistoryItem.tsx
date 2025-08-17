@@ -28,7 +28,7 @@ const HistoryItem = ({ entry }: { entry: HistoryEntry }) => {
             entry.paymentStatus.slice(1)}
         </Badge>
       </div>
-      <div className="flex items-center gap-12">
+      <div className="flex items-center justify-between">
         <p className="text-secondary-500 text-base font-normal">
           {formatDate(entry.checkInTime, true)}
         </p>
