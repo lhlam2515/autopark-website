@@ -7,7 +7,7 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
       <Navbar />
 
       <div className="flex">
-        <section className="flex min-h-dvh flex-1 flex-col pt-16 pb-16 sm:min-h-screen sm:px-14">
+        <section className="flex max-h-dvh min-h-dvh flex-1 flex-col pt-16 pb-16 sm:max-h-screen sm:min-h-screen sm:px-14">
           <div className="mx-auto h-full w-full max-w-4xl">{children}</div>
         </section>
       </div>

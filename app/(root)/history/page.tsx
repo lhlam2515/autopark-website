@@ -33,7 +33,7 @@ const HistoryPage = async () => {
         </p>
       </section>
 
-      <div className="flex w-full grow-1 flex-col items-center gap-3 px-3 py-2">
+      <div className="flex w-full grow-1 flex-col items-center gap-3 overflow-y-auto px-3 py-2">
         <InfoCard
           title="Usage Summary"
           imgUrl="/icons/summary.svg"
