@@ -187,7 +187,7 @@ export async function getParkingHistory(
     history.forEach(({ checkInTime, checkOutTime, fee }) => {
       const duration = calculateDuration(checkInTime, checkOutTime);
       totalSpent += fee || 0;
-      averageDuration += duration;
+      averageDuration += duration || 0;
     });
     averageDuration = totalSessions > 0 ? averageDuration / totalSessions : 0;
 
