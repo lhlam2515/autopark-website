@@ -75,6 +75,7 @@ export async function verifyOTP(
               child(slotRef, "name"),
               userData?.user?.name || "Unknown User"
             );
+            await set(child(slotRef, "checkInTime"), new Date().toISOString());
             await set(child(slotRef, "userId"), userData?.user?._id || "");
             await set(child(slotRef, "available"), false);
 

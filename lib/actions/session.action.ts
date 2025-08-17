@@ -253,6 +253,7 @@ export async function lockParkingSession(
       await set(child(slotRef, "available"), true);
       await set(child(slotRef, "name"), "");
       await set(child(slotRef, "userId"), null);
+      await set(child(slotRef, "checkInTime"), null);
     }
 
     return { success: true };
