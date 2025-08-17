@@ -23,7 +23,7 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
       <SessionProvider session={session}>
         <body className={`${inter.className} antialiased`}>
           {children}
-          <Toaster richColors />
+          <Toaster richColors position="top-right" />
         </body>
       </SessionProvider>
     </html>
