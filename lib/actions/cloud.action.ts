@@ -2,7 +2,11 @@
 
 import { Slot } from "@/database";
 import handleError from "../handlers/error";
-import { UpdatePushTokenSchema, VerifyOTPSchema } from "../validations";
+import {
+  PingSlotSchema,
+  UpdatePushTokenSchema,
+  VerifyOTPSchema,
+} from "../validations";
 import { child, DataSnapshot, off, onValue, ref, set } from "firebase/database";
 import { database } from "../firebase";
 import { createSession } from "./session.action";
@@ -107,6 +111,28 @@ export async function updatePushToken(
     const usersRef = ref(database, `users`);
 
     await set(child(usersRef, userId), { fcmToken: token });
+
+    return { success: true };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+
+export async function pingSlot(
+  params: PingSlotParams
+): Promise<ActionResponse> {
+  const validation = PingSlotSchema.safeParse(params);
+  if (!validation.success) {
+    return handleError(validation.error.flatten().fieldErrors) as ErrorResponse;
+  }
+
+  const { deviceId, slotId, ping } = validation.data;
+
+  try {
+    const slotIndex = slotId.split("-")[1];
+    const slotRef = ref(database, `devices/${deviceId}/slots/${slotIndex}`);
+
+    await set(child(slotRef, "ping"), ping);
 
     return { success: true };
   } catch (error) {

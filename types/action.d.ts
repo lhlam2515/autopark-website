@@ -79,3 +79,9 @@ interface UpdatePushTokenParams {
   userId: string;
   token: string;
 }
+
+interface PingSlotParams {
+  deviceId: string;
+  slotId: string;
+  ping?: boolean;
+}

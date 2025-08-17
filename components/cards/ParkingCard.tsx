@@ -10,9 +10,8 @@ import {
   formatDate,
   formatDuration,
 } from "@/lib/utils";
-import { database } from "@/lib/firebase";
-import { set, ref, child } from "firebase/database";
 import { Button } from "../ui/button";
+import { pingSlot } from "@/lib/actions/cloud.action";
 
 interface Props {
   slot: {
@@ -32,6 +31,21 @@ const ParkingCard = ({ slot, checkInTime, paid }: Props) => {
   const [fee, setFee] = useState(initialFee);
   const [ping, setPing] = useState(false);
 
+  const { deviceId, slotId } = slot;
+  const handlePingSlot = async () => {
+    const { success } = await pingSlot({ deviceId, slotId, ping: !ping });
+    if (success) setPing(!ping);
+  };
+
+  useEffect(() => {
+    const duration = setTimeout(async () => {
+      const { success } = await pingSlot({ deviceId, slotId, ping: false });
+      if (success) setPing(false);
+    }, 5000); // Timeout to reset ping after 5 seconds
+
+    return () => clearTimeout(duration);
+  }, [deviceId, ping, slotId]);
+
   useEffect(() => {
     if (paid) return; // Stop updating if paid
 
@@ -42,32 +56,6 @@ const ParkingCard = ({ slot, checkInTime, paid }: Props) => {
 
     return () => clearInterval(interval);
   }, [elapsed, checkInTime, paid]);
-
-  const handlePingSlot = async () => {
-    const slotIndex = slot.slotId.split("-")[1];
-    const slotRef = ref(
-      database,
-      `/devices/${slot.deviceId}/slots/${slotIndex}`
-    );
-
-    await set(child(slotRef, "ping"), !ping);
-    setPing(!ping);
-  };
-
-  useEffect(() => {
-    const duration = setTimeout(() => {
-      const slotIndex = slot.slotId.split("-")[1];
-      const slotRef = ref(
-        database,
-        `/devices/${slot.deviceId}/slots/${slotIndex}`
-      );
-
-      setPing(false);
-      set(child(slotRef, "ping"), false);
-    }, 5000); // Timeout to reset ping after 5 seconds
-
-    return () => clearTimeout(duration);
-  }, [ping, slot.deviceId, slot.slotId]);
 
   return (
     <InfoCard title="Parking Status" imgUrl="/icons/clock.svg">

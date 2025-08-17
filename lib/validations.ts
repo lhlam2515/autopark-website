@@ -208,3 +208,9 @@ export const UpdatePushTokenSchema = z.object({
   userId: z.string().min(1, { message: "User ID is required." }),
   token: z.string().min(1, { message: "Push token is required." }),
 });
+
+export const PingSlotSchema = z.object({
+  deviceId: z.string().min(1, { message: "Device ID is required." }),
+  slotId: z.string().min(1, { message: "Slot ID is required." }),
+  ping: z.boolean().optional().default(true),
+});
