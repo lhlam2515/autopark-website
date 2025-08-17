@@ -43,6 +43,7 @@ export const formatDate = (date: string | Date, compact: boolean = false) => {
     hour: compact ? undefined : "2-digit",
     minute: compact ? undefined : "2-digit",
     hour12: false, // 24-hour format
+    timeZone: "Asia/Ho_Chi_Minh",
   }).format(d);
 };
 
@@ -50,16 +51,20 @@ export const formatTimeBetween = (
   startTime: string | Date,
   endTime: string | Date
 ) => {
-  // Convert to Date objects if they're strings
   const startDate = new Date(startTime);
   const endDate = new Date(endTime);
 
-  const startHour = startDate.getHours().toString().padStart(2, "0");
-  const startMinute = startDate.getMinutes().toString().padStart(2, "0");
-  const endHour = endDate.getHours().toString().padStart(2, "0");
-  const endMinute = endDate.getMinutes().toString().padStart(2, "0");
+  const formatter = new Intl.DateTimeFormat(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "Asia/Ho_Chi_Minh",
+  });
 
-  return `${startHour}:${startMinute} - ${endHour}:${endMinute}`;
+  const startFormatted = formatter.format(startDate);
+  const endFormatted = formatter.format(endDate);
+
+  return `${startFormatted} - ${endFormatted}`;
 };
 
 export const formatDuration = (duration: number) => {
