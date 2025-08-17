@@ -38,12 +38,10 @@ export const formatDate = (date: string | Date, compact: boolean = false) => {
   const d = new Date(date);
   return new Intl.DateTimeFormat(undefined, {
     // `undefined` uses user's locale
-    year: "numeric",
     month: "short", // "Aug" instead of "August"
     day: "numeric",
     hour: compact ? undefined : "2-digit",
     minute: compact ? undefined : "2-digit",
-    second: compact ? undefined : "2-digit",
     hour12: false, // 24-hour format
   }).format(d);
 };
