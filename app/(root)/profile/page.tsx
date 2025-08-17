@@ -35,11 +35,11 @@ const UserProfile = async () => {
   return (
     <div className="flex h-full w-full flex-col items-center gap-4">
       <section className="mt-2.5 flex w-full flex-col items-start justify-center px-2">
-        <h1 className="text-primary-400 text-5xl font-bold">
+        <h1 className="text-primary-400 text-[2.5rem] leading-tight font-bold tracking-tight">
           Your <span className="text-secondary-500">Profile</span>
         </h1>
 
-        <p className="text-secondary-100 text-3xl font-normal">
+        <p className="text-secondary-100 text-2xl font-normal">
           Manage your personal and subscription information.
         </p>
       </section>

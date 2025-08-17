@@ -24,16 +24,16 @@ const HistoryPage = async () => {
   return (
     <div className="flex h-full w-full flex-col items-center gap-4">
       <section className="mt-2.5 flex w-full flex-col items-start justify-center px-2">
-        <h1 className="text-primary-400 text-5xl font-bold tracking-tight">
+        <h1 className="text-primary-400 text-[2.5rem] leading-tight font-bold tracking-tight">
           Your <span className="text-secondary-500">Parking History</span>
         </h1>
 
-        <p className="text-secondary-100 text-3xl font-normal">
+        <p className="text-secondary-100 text-2xl font-normal">
           View usage statistics and past sessions.
         </p>
       </section>
 
-      <div className="flex w-full grow-1 flex-col items-center gap-3 overflow-y-auto px-3 py-2">
+      <div className="flex w-full grow-1 flex-col items-center gap-3 px-3 py-2">
         <InfoCard
           title="Usage Summary"
           imgUrl="/icons/summary.svg"
