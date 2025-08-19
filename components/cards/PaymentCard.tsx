@@ -19,9 +19,10 @@ import { sendNotificationEmail } from "@/lib/actions/email.action";
 interface Props {
   checkInTime: Date;
   paymentStatus: "paid" | "unpaid";
+  canPay: boolean;
 }
 
-const PaymentCard = ({ checkInTime, paymentStatus }: Props) => {
+const PaymentCard = ({ checkInTime, paymentStatus, canPay }: Props) => {
   const router = useRouter();
   const initialFee = calculateParkingFee(calculateElapsedTime(checkInTime));
   const [fee, setFee] = useState(initialFee);
@@ -70,7 +71,7 @@ const PaymentCard = ({ checkInTime, paymentStatus }: Props) => {
             />
           )}
         </Entry>
-        {paymentStatus === "unpaid" && (
+        {paymentStatus === "unpaid" && canPay && (
           <Button
             className="bg-primary-500 hover:bg-primary-400 text-primary-100 text-base font-semibold"
             onClick={handlePayment}

@@ -72,6 +72,7 @@ const ParkingSession = async () => {
         <PaymentCard
           checkInTime={parkingSession.checkInTime}
           paymentStatus={parkingSession.paymentStatus}
+          canPay={parkingSession.locked}
         />
       </div>
       <ToolBar>
