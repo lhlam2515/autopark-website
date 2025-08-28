@@ -6,18 +6,15 @@ import { usePathname } from "next/navigation";
 import React from "react";
 
 import { SheetClose } from "@/components/ui/sheet";
-import { sidebarLinks as adminLinks } from "@/constants/admin";
-import { sidebarLinks as userLinks } from "@/constants/user";
+import { links } from "@/constants/links";
 import { cn } from "@/lib/utils";
 
 const NavLinks = ({ isMobileNav = false }: { isMobileNav?: boolean }) => {
   const pathname = usePathname();
-  const admin = false; // Replace with actual logic to determine if the user is an admin
-  const sidebarLinks = admin ? adminLinks : userLinks;
 
   return (
     <>
-      {sidebarLinks.map((item) => {
+      {links.map((item) => {
         const isActive =
           (pathname.includes(item.route) && item.route.length > 1) ||
           pathname === item.route;

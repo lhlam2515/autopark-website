@@ -1,4 +1,4 @@
-export const sidebarLinks = [
+export const links = [
   {
     imgURL: "/icons/home.svg",
     route: "/",

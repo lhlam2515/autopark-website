@@ -2,23 +2,17 @@ import ROUTES from "@/constants/routes";
 import Link from "next/link";
 import React from "react";
 
-import { cn } from "@/lib/utils";
 import MobileNav from "./MobileNav";
 import { auth } from "@/auth";
 import UserAvatar from "@/components/UserAvatar";
 import Notification from "@/components/Notification";
 
-const Navbar = async ({ admin = false }: { admin?: boolean }) => {
+const Navbar = async () => {
   const session = await auth();
 
   return (
-    <nav
-      className={cn(
-        admin ? "bg-primary-100" : "bg-primary-300",
-        "border-secondary-500 fixed z-50 flex w-full justify-between gap-5 border-b p-3"
-      )}
-    >
-      <Link href={admin ? ROUTES.DASHBOARD : ROUTES.HOME}>
+    <nav className="bg-primary-300 border-secondary-500 fixed z-50 flex w-full justify-between gap-5 border-b p-3">
+      <Link href={ROUTES.HOME}>
         <p className="text-secondary-500 text-3xl font-bold max-sm:text-2xl">
           Auto<span className="text-secondary-100">Park</span>
         </p>
