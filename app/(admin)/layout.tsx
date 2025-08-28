@@ -5,7 +5,7 @@ import React from "react";
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <main className="bg-primary-200 relative">
-      <Navbar admin={true} />
+      <Navbar admin />
 
       <div className="flex">
         <Sidebar />

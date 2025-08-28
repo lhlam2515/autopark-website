@@ -14,8 +14,8 @@ const Navbar = async ({ admin = false }: { admin?: boolean }) => {
   return (
     <nav
       className={cn(
-        admin ? "bg-primary-100 p-6" : "bg-primary-300 p-3",
-        "border-secondary-500 fixed z-50 flex w-full justify-between gap-5 border-b"
+        admin ? "bg-primary-100" : "bg-primary-300",
+        "border-secondary-500 fixed z-50 flex w-full justify-between gap-5 border-b p-3"
       )}
     >
       <Link href={admin ? ROUTES.DASHBOARD : ROUTES.HOME}>
