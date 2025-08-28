@@ -111,3 +111,7 @@ The application connects to IoT parking hardware and provides real-time status u
    ```
 
 5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
+
+## 🔗 Related Projects
+
+- [AutoPark Firebase](https://github.com/lhlam2515/autopark-functions) - Firebase Cloud Functions for notifications delivery
